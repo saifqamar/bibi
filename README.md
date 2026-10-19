@@ -1,18 +1,16 @@
 # Bibi
 
-**Bibi is your personal AI agent that does everything for you.**
+**Bibi is an app for audio stories and dramas.** It uses AI to generate stories and offers a friendly, easy-to-use interface for listening to them.
 
-Tell Bibi what you need, and it gets it done — so you can spend your time on what matters.
+## Features
 
-## What Bibi does
+- **AI-generated stories** – new stories and dramas created by AI, on any theme or genre
+- **Audio storytelling** – stories are narrated so you can listen anywhere, hands-free
+- **Audio dramas** – multi-voice, scene-by-scene performances
+- **User-friendly player** – simple playback controls, easy browsing and discovery
+- **Personal library** – save favourites and pick up where you left off
 
-- **Handles your tasks** – from small errands to multi-step projects
-- **Manages your day** – schedules, reminders, and to-dos
-- **Takes care of communication** – drafting and organizing emails and messages
-- **Finds and summarizes information** – research, answers, and quick briefings
-- **Works on your behalf** – acts across your apps and services
-
-> Bibi is under active development. Features listed above describe the project's vision and will land incrementally.
+> Bibi is under active development. The features above describe the project's vision and will land incrementally.
 
 ## Getting started
 
@@ -25,10 +23,10 @@ Open `index.html` in your browser to view the current front end.
 
 ## Project structure
 
-| File         | Description          |
-| ------------ | -------------------- |
-| `index.html` | Main page            |
-| `style.css`  | Styles               |
+| File         | Description |
+| ------------ | ----------- |
+| `index.html` | Main page   |
+| `style.css`  | Styles      |
 
 ## Contributing
 
