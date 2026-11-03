@@ -33,15 +33,23 @@ let cache: QueuedEvent[] | null = null;
 let writing: Promise<void> = Promise.resolve();
 let flushing: Promise<void> | null = null;
 
-async function load(): Promise<QueuedEvent[]> {
-  if (cache) return cache;
-  try {
-    const raw = await AsyncStorage.getItem(KEY);
-    cache = raw ? (JSON.parse(raw) as QueuedEvent[]) : [];
-  } catch {
-    cache = [];
-  }
-  return cache;
+let loading: Promise<QueuedEvent[]> | null = null;
+
+/** Reads the queue once; concurrent callers share the same read so no event is lost. */
+function load(): Promise<QueuedEvent[]> {
+  if (cache) return Promise.resolve(cache);
+  loading ??= (async () => {
+    try {
+      const raw = await AsyncStorage.getItem(KEY);
+      cache = raw ? (JSON.parse(raw) as QueuedEvent[]) : [];
+    } catch {
+      cache = [];
+    } finally {
+      loading = null;
+    }
+    return cache;
+  })();
+  return loading;
 }
 
 function save(): Promise<void> {
@@ -108,6 +116,7 @@ export function flushEvents(): Promise<void> {
 /** Test helper: forgets the in-memory copy so the next call reads storage again. */
 export function resetEventQueueForTests(): void {
   cache = null;
+  loading = null;
   writing = Promise.resolve();
   flushing = null;
 }

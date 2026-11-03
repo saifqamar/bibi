@@ -12,15 +12,23 @@ const KEY = "bibi.progress";
 let cache: Record<string, LocalProgress> | null = null;
 let syncing: Promise<void> | null = null;
 
-async function load(): Promise<Record<string, LocalProgress>> {
-  if (cache) return cache;
-  try {
-    const raw = await AsyncStorage.getItem(KEY);
-    cache = raw ? (JSON.parse(raw) as Record<string, LocalProgress>) : {};
-  } catch {
-    cache = {};
-  }
-  return cache;
+let loading: Promise<Record<string, LocalProgress>> | null = null;
+
+/** Reads saved progress once; concurrent callers share the same read. */
+function load(): Promise<Record<string, LocalProgress>> {
+  if (cache) return Promise.resolve(cache);
+  loading ??= (async () => {
+    try {
+      const raw = await AsyncStorage.getItem(KEY);
+      cache = raw ? (JSON.parse(raw) as Record<string, LocalProgress>) : {};
+    } catch {
+      cache = {};
+    } finally {
+      loading = null;
+    }
+    return cache;
+  })();
+  return loading;
 }
 
 async function save(): Promise<void> {
@@ -105,5 +113,6 @@ export function syncProgress(): Promise<void> {
 
 export function resetProgressForTests(): void {
   cache = null;
+  loading = null;
   syncing = null;
 }
