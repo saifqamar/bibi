@@ -7,6 +7,7 @@ import { BibleTab } from "@/writer/bible/BibleTab";
 import { EpisodePage } from "@/writer/episodes/EpisodePage";
 import { EpisodesTab } from "@/writer/episodes/EpisodesTab";
 import { ProposalsTab, usePendingProposals } from "@/writer/bible/ProposalsTab";
+import { BudgetWarning } from "./BudgetWarning";
 import { OverviewTab } from "./OverviewTab";
 import { useSeries } from "./queries";
 
@@ -28,6 +29,7 @@ export function SeriesWorkspace() {
             }
             description="AI-assisted story · listeners always see this label."
           />
+          <BudgetWarning seriesId={series.id} />
           <TabNav
             label="Series sections"
             items={[
