@@ -3,6 +3,8 @@
 import difflib
 import uuid
 from collections.abc import Callable
+from datetime import UTC, datetime
+from decimal import Decimal
 from typing import TYPE_CHECKING
 
 from sqlalchemy import func, select, update
@@ -287,6 +289,48 @@ class EpisodeService:
         episode.current_draft_id = draft.id
         self._audit(user, "episode.line_fix", episode, {"version": draft.version})
         return draft
+
+    def mark_published(
+        self, episode_id: uuid.UUID, audio_asset_id: uuid.UUID, duration_seconds: Decimal
+    ) -> Episode:
+        episode = self._episode(episode_id)
+        status_rules.transition(episode, EpisodeStatus.PUBLISHED)
+        episode.published_audio_id = audio_asset_id
+        episode.published_duration_seconds = duration_seconds
+        if episode.published_at is None:
+            episode.published_at = datetime.now(UTC)
+        return episode
+
+    def mark_unpublished(self, episode_id: uuid.UUID) -> Episode:
+        episode = self._episode(episode_id)
+        if episode.status == EpisodeStatus.PUBLISHED:
+            status_rules.transition(episode, EpisodeStatus.APPROVED)
+        episode.published_at = None
+        episode.published_audio_id = None
+        episode.published_duration_seconds = None
+        return episode
+
+    def all_for_series(self, series_id: uuid.UUID) -> list[Episode]:
+        """Every episode of a series, in order (system read)."""
+        return list(
+            self.db.scalars(
+                select(Episode).where(Episode.series_id == series_id).order_by(Episode.number)
+            )
+        )
+
+    def live_episodes(self, series_id: uuid.UUID) -> list[Episode]:
+        """Episodes listeners can play, in order."""
+        return list(
+            self.db.scalars(
+                select(Episode)
+                .where(
+                    Episode.series_id == series_id,
+                    Episode.published_at.is_not(None),
+                    Episode.published_audio_id.is_not(None),
+                )
+                .order_by(Episode.number)
+            )
+        )
 
     def set_current_audio(self, episode_id: uuid.UUID, audio_asset_id: uuid.UUID) -> None:
         self._episode(episode_id).current_audio_id = audio_asset_id

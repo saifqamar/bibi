@@ -85,6 +85,17 @@ class CatalogService:
             stmt = stmt.where(Series.title.ilike(f"%{_escape_like(q)}%", escape="\\"))
         return stmt
 
+    def series_ids(
+        self, *, owner_writer_id: uuid.UUID | None = None, series_id: uuid.UUID | None = None
+    ) -> list[uuid.UUID]:
+        """System read used for admin filters."""
+        stmt = select(Series.id)
+        if owner_writer_id:
+            stmt = stmt.where(Series.owner_writer_id == owner_writer_id)
+        if series_id:
+            stmt = stmt.where(Series.id == series_id)
+        return list(self.db.scalars(stmt))
+
     def create_series(self, user: CurrentUser, data: SeriesCreate) -> Series:
         series = Series(owner_writer_id=user.id, **data.model_dump())
         self.db.add(series)
