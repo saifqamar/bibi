@@ -20,6 +20,10 @@ class Settings(BaseSettings):
     redis_url: str | None = None
 
     secret_key: str = INSECURE_DEV_SECRET
+    access_token_ttl_minutes: int = 15
+    refresh_token_ttl_days: int = 30
+    invite_ttl_days: int = 7
+    social_auth_backend: str = "disabled"  # disabled | fake (real providers: [OPEN])
     public_base_url: str = "http://localhost:8000"
     studio_url: str = "http://localhost:5173"
     cors_origins: list[str] = ["http://localhost:5173", "http://localhost:3000"]
