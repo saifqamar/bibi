@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router";
-import { AnalyticsPlaceholder } from "./AnalyticsPlaceholder";
+import { AnalyticsPage } from "./analytics/AnalyticsPage";
 import { AuditLogPage } from "./audit/AuditLogPage";
 import { SeriesAdminDetail } from "./catalog/SeriesAdminDetail";
 import { SeriesAdminPage } from "./catalog/SeriesAdminPage";
@@ -22,7 +22,7 @@ export default function AdminApp() {
       <Route path="shelves" element={<ShelvesPage />} />
       <Route path="voices" element={<VoicesAdminPage />} />
       <Route path="costs" element={<CostsPage />} />
-      <Route path="analytics" element={<AnalyticsPlaceholder />} />
+      <Route path="analytics" element={<AnalyticsPage />} />
       <Route path="audit" element={<AuditLogPage />} />
     </Routes>
   );
