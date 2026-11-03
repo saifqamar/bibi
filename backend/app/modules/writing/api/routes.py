@@ -219,4 +219,6 @@ def reject_proposal(
     return service.reject(user, proposal_id)
 
 
-routers = [router]
+from app.modules.writing.api.episodes import router as episodes_router  # noqa: E402
+
+routers = [router, episodes_router]
