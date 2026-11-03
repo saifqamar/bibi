@@ -4,6 +4,7 @@ from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.shared.config import Settings, get_settings
+from app.shared.errors import install_error_handlers
 from app.shared.logging import configure_logging
 from app.shared.middleware import RequestIdMiddleware
 
@@ -23,6 +24,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         expose_headers=["X-Request-ID"],
     )
     app.add_middleware(RequestIdMiddleware)
+    install_error_handlers(app)
 
     api = APIRouter(prefix=settings.api_prefix)
 
