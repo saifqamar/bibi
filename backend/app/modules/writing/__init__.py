@@ -5,7 +5,7 @@ Other modules may import only the names exported here.
 
 from app.modules.writing.api.listener import ListenerEpisodeOut, is_free, listener_episode
 from app.modules.writing.episodes import EpisodeService, draft_out, register_status_guard
-from app.modules.writing.models import DraftSource, EpisodeStatus, ProposalOp
+from app.modules.writing.models import DraftSource, Episode, EpisodeStatus, ProposalOp
 from app.modules.writing.schemas import DraftSummary, EpisodeOut, ProposalIn, ScriptLineOut
 from app.modules.writing.script import parse_script
 from app.modules.writing.service import BibleService, register_reference_checker
@@ -16,6 +16,7 @@ __all__ = [
     "BibleService",
     "DraftSource",
     "DraftSummary",
+    "Episode",
     "EpisodeOut",
     "EpisodeService",
     "EpisodeStatus",
