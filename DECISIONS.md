@@ -18,6 +18,8 @@ Records every deviation from `BIBI_SPEC.md` / `spec_docs/`, every `[CHECK]` item
 | D5 | LLM tracing "for example Langfuse" | `TracerPort` with a structured-log tracer | Tracing vendor not chosen; a Langfuse/OpenTelemetry adapter plugs into the same port. |
 | D7 | One `thread_id` per episode per workflow, e.g. `episode-123:drafting` | `episode-{id}:{workflow}:{run}`: still one thread per episode and workflow, plus the run | A new drafting run must start from a fresh state; a paused run resumes from its own checkpoint. |
 | D8 | Loudness "measured with a BS.1770 implementation in `audio/loudness.py`" (plan 07) | ffmpeg's `ebur128` filter (EBU R128 / BS.1770) plus a linear gain; peaks capped at -1.5 dBFS using sample peak | A pure-Python K-weighting filter is far too slow for 16-minute episodes; ffmpeg is already required for MP3. True-peak oversampling skipped for speed. |
+| D9 | Background audio with `react-native-track-player` (plan 10/11) | `expo-audio` (Expo SDK 58): background playback, lock-screen metadata and controls | track-player 4.x does not support the current React Native; its v5 is an alpha. expo-audio ships with the SDK. |
+| D10 | Tailwind via NativeWind (version not stated) | NativeWind 4 with Tailwind CSS 3.4 in the mobile app (Studio stays on Tailwind 4) | NativeWind 4 requires Tailwind 3. |
 | D6 | Embeddings via `EmbeddingPort` | Deterministic fake embeddings (1536 dimensions) | Anthropic has no embeddings API and the embedding provider is not chosen. |
 
 ## [CHECK] items verified
@@ -78,3 +80,6 @@ See `spec_docs/plans/README.md` and each plan's review table. Additional choices
 | 12 | Return rates | Of listeners first active on day D, the share active again on exactly D+1, D+7 or D+30. |
 | 12 | Aggregation | Every 15 minutes (Arq cron) from a watermark over an increasing event sequence; admins can trigger it. |
 | 12 | Event batch limits | 200 events and 256 KB per request; the size limit is enforced in middleware before parsing. |
+| 10 | Session storage | Tokens and user live in the device keychain (`expo-secure-store`); a 401 triggers one shared refresh, a rejected refresh signs out, a network failure keeps the session. |
+| 10 | Offline browse | Home, series and progress queries are persisted (AsyncStorage, kept 7 days) and shown with an offline banner. |
+| 10 | Shared validation package | `packages/schemas` not created: both apps use the generated OpenAPI types and the server validates; no client-side schema is shared yet. |
