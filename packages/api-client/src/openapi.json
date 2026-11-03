@@ -2031,6 +2031,24 @@
         "title": "RefreshIn",
         "type": "object"
       },
+      "RegenerateIn": {
+        "properties": {
+          "sections": {
+            "items": {
+              "$ref": "#/components/schemas/Section"
+            },
+            "maxItems": 20,
+            "minItems": 1,
+            "title": "Sections",
+            "type": "array"
+          }
+        },
+        "required": [
+          "sections"
+        ],
+        "title": "RegenerateIn",
+        "type": "object"
+      },
       "RelationshipCreate": {
         "additionalProperties": false,
         "properties": {
@@ -2186,6 +2204,25 @@
           }
         },
         "title": "RelationshipUpdate",
+        "type": "object"
+      },
+      "ResumeIn": {
+        "description": "Answer for the step the run is waiting at, e.g. ``{\"action\": \"approve\"}``, or empty to\nretry a failed run.",
+        "properties": {
+          "payload": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Payload"
+          }
+        },
+        "title": "ResumeIn",
         "type": "object"
       },
       "Role": {
@@ -2392,6 +2429,32 @@
           "unknown_speaker"
         ],
         "title": "ScriptLineOut",
+        "type": "object"
+      },
+      "Section": {
+        "properties": {
+          "end": {
+            "exclusiveMinimum": 0.0,
+            "title": "End",
+            "type": "integer"
+          },
+          "note": {
+            "default": "",
+            "maxLength": 2000,
+            "title": "Note",
+            "type": "string"
+          },
+          "start": {
+            "minimum": 0.0,
+            "title": "Start",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "start",
+          "end"
+        ],
+        "title": "Section",
         "type": "object"
       },
       "SeriesCostOut": {
@@ -5470,6 +5533,64 @@
         ]
       }
     },
+    "/api/v1/studio/episodes/{episode_id}/regenerate-section": {
+      "post": {
+        "operationId": "regenerate_section_api_v1_studio_episodes__episode_id__regenerate_section_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "episode_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Episode Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegenerateIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Regenerate Section",
+        "tags": [
+          "studio: ai runs and costs"
+        ]
+      }
+    },
     "/api/v1/studio/episodes/{episode_id}/script": {
       "get": {
         "operationId": "get_script_api_v1_studio_episodes__episode_id__script_get",
@@ -5627,6 +5748,54 @@
           }
         ],
         "summary": "List Runs",
+        "tags": [
+          "studio: ai runs and costs"
+        ]
+      }
+    },
+    "/api/v1/studio/episodes/{episode_id}/workflows/drafting": {
+      "post": {
+        "operationId": "start_drafting_api_v1_studio_episodes__episode_id__workflows_drafting_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "episode_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Episode Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Start Drafting",
         "tags": [
           "studio: ai runs and costs"
         ]
@@ -8180,6 +8349,54 @@
         ]
       }
     },
+    "/api/v1/studio/workflow-runs/{run_id}/cancel": {
+      "post": {
+        "operationId": "cancel_run_api_v1_studio_workflow_runs__run_id__cancel_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Cancel Run",
+        "tags": [
+          "studio: ai runs and costs"
+        ]
+      }
+    },
     "/api/v1/studio/workflow-runs/{run_id}/events": {
       "get": {
         "description": "Server-sent events with run progress. Closes when the run waits for the writer or ends;\nreconnect with ``Last-Event-ID`` (or ``after``) to continue.",
@@ -8249,6 +8466,64 @@
           }
         ],
         "summary": "Stream Run Events",
+        "tags": [
+          "studio: ai runs and costs"
+        ]
+      }
+    },
+    "/api/v1/studio/workflow-runs/{run_id}/resume": {
+      "post": {
+        "operationId": "resume_run_api_v1_studio_workflow_runs__run_id__resume_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResumeIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Resume Run",
         "tags": [
           "studio: ai runs and costs"
         ]
