@@ -61,6 +61,10 @@ class Settings(BaseSettings):
     audio_true_peak: float = -1.5
     audio_mp3_bitrate: str = "96k"
 
+    # Public website
+    public_sample_seconds: int = 90  # first N seconds of episode 1 ([OPEN] in spec 13)
+    public_sample_url_ttl_seconds: int = 600
+
     sentry_dsn: str | None = None
     sentry_traces_sample_rate: float = 0.0
 

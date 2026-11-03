@@ -273,6 +273,7 @@ class ReviewService:
         asset = self.audio.current_asset(episode_id)
         assert asset is not None
         self.episodes.mark_published(episode_id, asset.id, asset.duration_seconds)
+        self.audio.schedule_sample(episode_id)
         series = self.catalog.get_series(episode.series_id)
         if series.status != SeriesStatus.ARCHIVED:
             self.catalog.set_status(series.id, SeriesStatus.PUBLISHED)

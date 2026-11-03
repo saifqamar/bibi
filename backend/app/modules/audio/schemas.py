@@ -118,3 +118,9 @@ class PlaybackOut(BaseModel):
     format: str
     duration_seconds: Decimal | None
     next_episode_id: uuid.UUID | None = Field(description="Next live episode, for auto-advance")
+
+
+class SampleOut(BaseModel):
+    url: str = Field(description="Signed, short-lived URL of the sample clip only")
+    duration_seconds: Decimal
+    episode_number: int

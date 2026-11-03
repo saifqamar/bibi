@@ -89,7 +89,11 @@ def queue_items(client: TestClient, admin: TestUser) -> list[dict]:
 
 
 def test_full_review_and_publish(
-    client: TestClient, people: dict[str, TestUser], produced: dict[str, Any], db: Session
+    client: TestClient,
+    people: dict[str, TestUser],
+    produced: dict[str, Any],
+    db: Session,
+    container: Container,
 ) -> None:
     writer, admin, listener = people["writer"], people["admin"], people["listener"]
     episode_id, series_id = produced["episode"]["id"], produced["series"]["id"]
@@ -130,6 +134,13 @@ def test_full_review_and_publish(
     assert [(e["number"], e["title"], e["is_free"]) for e in episodes] == [(1, "Fog", True)]
     assert float(episodes[0]["duration_seconds"]) > 1
     assert client.get(f"{API}/episodes/{episode_id}", headers=listener.headers).status_code == 200
+
+    # Publishing episode 1 makes the public web sample in the background.
+    assert isinstance(container.queue, InMemoryJobQueue)
+    container.queue.run_pending()
+    sample = client.get(f"/api/v1/public/series/{series_id}/sample")
+    assert sample.status_code == 200, sample.text
+    assert "/sample-" in sample.json()["url"]
 
     notes = client.get(f"{STUDIO}/notifications", headers=writer.headers).json()
     assert notes["unread"] == 2

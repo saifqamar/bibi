@@ -38,6 +38,7 @@ from app.modules.audio.schemas import (
     EpisodeAudioOut,
     PlaybackOut,
     RenderOut,
+    SampleOut,
     VoiceIn,
     VoiceUpdate,
 )
@@ -60,6 +61,7 @@ logger = logging.getLogger(__name__)
 
 RENDER_JOB = "audio.render_episode"
 PREVIEW_JOB = "audio.voice_preview"
+SAMPLE_JOB = "audio.sample"
 PAUSE_LINE_MS = 350
 PAUSE_PARAGRAPH_MS = 700
 PAUSE_SCENE_MS = 1500
@@ -600,6 +602,71 @@ class AudioService:
             next_episode_id=later[0].id if later else None,
         )
 
+    # Web samples -------------------------------------------------------------------------------
+
+    @staticmethod
+    def _sample_key(episode_id: uuid.UUID, source_asset_id: uuid.UUID) -> str:
+        return f"audio/{episode_id}/sample-{source_asset_id}.mp3"
+
+    def schedule_sample(self, episode_id: uuid.UUID) -> None:
+        """Called on publish: the first episode of a series gets a web sample in the background."""
+        if self.episodes.get(episode_id).number == 1:
+            self.container.queue.enqueue(SAMPLE_JOB, episode_id=str(episode_id))
+
+    def make_sample(self, episode_id: uuid.UUID) -> AudioAsset | None:
+        """Cuts the first N seconds (with a fade-out) of the published audio into a sample."""
+        episode = self.episodes.get(episode_id)
+        if episode.published_audio_id is None:
+            return None
+        key = self._sample_key(episode.id, episode.published_audio_id)
+        existing = self.db.scalar(select(AudioAsset).where(AudioAsset.storage_key == key))
+        if existing is not None:
+            return existing
+        source = self.db.get(AudioAsset, episode.published_audio_id)
+        assert source is not None
+        settings = self.container.settings
+        frames = processing.decode(self.container.storage.get(source.storage_key))
+        seconds = min(float(settings.public_sample_seconds), float(source.duration_seconds))
+        wav = processing.cut(processing.frames_to_wav(frames), seconds)
+        self.container.storage.put(
+            key, processing.encode_mp3(wav, settings.audio_mp3_bitrate), "audio/mpeg"
+        )
+        sample = AudioAsset(
+            episode_id=episode.id,
+            render_id=source.render_id,
+            kind="sample",
+            storage_key=key,
+            format="mp3",
+            duration_seconds=Decimal(processing.duration_ms(processing.to_standard_pcm(wav)))
+            / 1000,
+        )
+        self.db.add(sample)
+        self.db.flush()
+        return sample
+
+    def public_sample(self, series_id: uuid.UUID) -> SampleOut:
+        """The sample of the series' first live episode. Full-episode URLs are never returned."""
+        live = self.episodes.live_episodes(series_id)
+        first = live[0] if live else None
+        sample = (
+            self.db.scalar(
+                select(AudioAsset).where(
+                    AudioAsset.kind == "sample",
+                    AudioAsset.storage_key == self._sample_key(first.id, first.published_audio_id),
+                )
+            )
+            if first and first.published_audio_id
+            else None
+        )
+        if sample is None:
+            raise NotFound("No sample yet")
+        ttl = self.container.settings.public_sample_url_ttl_seconds
+        return SampleOut(
+            url=self.container.storage.signed_url(sample.storage_key, ttl_seconds=ttl),
+            duration_seconds=sample.duration_seconds,
+            episode_number=first.number if first else 1,
+        )
+
     def episode_audio(self, user: CurrentUser, episode_id: uuid.UUID) -> EpisodeAudioOut:
         self.episodes.get_for_user(user, episode_id)
         render = self._latest_render(episode_id)
@@ -666,6 +733,13 @@ class AudioService:
 def render_episode_job(container: Any, *, render_id: str) -> None:
     with container.db.session() as db:
         AudioService(db, container).execute(uuid.UUID(render_id))
+
+
+@job(SAMPLE_JOB, queue=QUEUE_VOICE)
+def sample_job(container: Any, *, episode_id: str) -> None:
+    with container.db.session() as db:
+        AudioService(db, container).make_sample(uuid.UUID(episode_id))
+        db.commit()
 
 
 @job(PREVIEW_JOB, queue=QUEUE_VOICE)
