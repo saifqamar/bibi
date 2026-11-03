@@ -57,3 +57,7 @@ See `spec_docs/plans/README.md` and each plan's review table. Additional choices
 | 05 | Rewriting a selection | Applies to the saved text only; during a run it goes through the review step, otherwise a one-step `section_regen` run. |
 | 05 | Retrieval for drafting | The two previous episodes plus the three most similar earlier summaries (pgvector cosine). |
 | 05 | Malformed AI canon suggestions | Dropped and logged; they never fail the run. |
+| 06 | Earlier passages for the check | Paragraphs from earlier episodes that mention characters present in this episode (up to 12), instead of embedding every paragraph. Cheaper and deterministic; revisit if recall is low. |
+| 06 | Issue grounding | Issues whose quote is not in the episode text are dropped; open errors block `ready_for_audio` on any draft version until fixed or marked intentional (with a note). |
+| 06 | Precision/recall target ([OPEN]) | Not set. The seeded contradiction fixtures in `tests/ai/test_continuity.py` are the start of an evaluation set for the real model. |
+| 06 | "Update canon" from an issue | API creates a canon proposal; the Studio links to the relevant bible section for direct edits. |
