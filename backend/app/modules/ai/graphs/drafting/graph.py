@@ -1,4 +1,4 @@
-"""The drafting graph: draft → writer review ⟲ → continuity ⟲ → canon proposals → finalize.
+"""The drafting graph: draft → writer review ⟲ → continuity (subgraph) ⟲ → canon → finalize.
 
 It pauses (LangGraph interrupt) for the writer at review, at contradictions and at canon
 confirmation; the Postgres checkpointer lets a run resume days later.
@@ -10,6 +10,7 @@ from langgraph.graph import END, START, StateGraph
 from langgraph.graph.state import CompiledStateGraph
 
 from app.modules.ai.engine import NODE_RETRY, Deps, node
+from app.modules.ai.graphs.continuity.graph import build_continuity_subgraph
 from app.modules.ai.graphs.drafting import nodes
 
 
@@ -45,7 +46,6 @@ def build_drafting_graph(deps: Deps, checkpointer: Any) -> CompiledStateGraph:
         "draft": nodes.draft,
         "writer_review": nodes.writer_review,
         "apply_section_rewrites": nodes.apply_section_rewrites,
-        "continuity": nodes.continuity,
         "resolve_contradictions": nodes.resolve_contradictions,
         "propose_canon": nodes.propose_canon,
         "confirm_canon": nodes.confirm_canon,
@@ -53,6 +53,8 @@ def build_drafting_graph(deps: Deps, checkpointer: Any) -> CompiledStateGraph:
     }
     for name, fn in steps.items():
         graph.add_node(name, node(deps, name, fn), retry_policy=NODE_RETRY)
+
+    graph.add_node("continuity", build_continuity_subgraph(deps))
 
     graph.add_edge(START, "load_context")
     graph.add_edge("load_context", "draft")
