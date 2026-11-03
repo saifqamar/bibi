@@ -10,21 +10,31 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
+from app.modules.ai.continuity import ContinuityService
 from app.modules.ai.costs import CostService
-from app.modules.ai.models import TERMINAL, RunStatus, WorkflowRun
+from app.modules.ai.models import (
+    TERMINAL,
+    ContinuityIssue,
+    IssueStatus,
+    RunStatus,
+    WorkflowRun,
+)
 from app.modules.ai.runs import RunService
 from app.modules.ai.schemas import (
     AdminCostsOut,
     BudgetIn,
     BudgetOut,
     CostSummary,
+    IssueCanonIn,
+    IssueOut,
+    ResolveIssueIn,
     RunOut,
     SeriesCostOut,
 )
 from app.modules.ai.service import AIService, Section
 from app.modules.catalog import CatalogService
 from app.modules.identity import CurrentUser, require_admin, require_studio
-from app.modules.writing import EpisodeService
+from app.modules.writing import BibleService, EpisodeService, ProposalIn, ProposalOp
 from app.shared.db import get_db
 from app.shared.ratelimit import rate_limit
 
@@ -170,6 +180,80 @@ def start_drafting(
     costs: CostService = Depends(get_cost_service),
 ) -> RunOut:
     return run_out(service.start_drafting(user, episode_id), costs)
+
+
+@studio_router.post(
+    "/episodes/{episode_id}/workflows/continuity",
+    response_model=RunOut,
+    status_code=202,
+    dependencies=[Depends(_ai_limit)],
+)
+def start_continuity(
+    episode_id: uuid.UUID,
+    user: CurrentUser = Depends(require_studio),
+    service: AIService = Depends(get_ai_service),
+    costs: CostService = Depends(get_cost_service),
+) -> RunOut:
+    return run_out(service.start_continuity(user, episode_id), costs)
+
+
+@studio_router.get("/episodes/{episode_id}/continuity-issues", response_model=list[IssueOut])
+def list_issues(
+    episode_id: uuid.UUID,
+    request: Request,
+    status_filter: IssueStatus | None = Query(None, alias="status"),
+    user: CurrentUser = Depends(require_studio),
+    db: Session = Depends(get_db),
+) -> list[IssueOut]:
+    EpisodeService(db, request.app.state.container).get_for_user(user, episode_id)
+    issues = ContinuityService(db).issues(episode_id, status_filter)
+    return [IssueOut.model_validate(i) for i in issues]
+
+
+def _issue_for_user(
+    request: Request, db: Session, user: CurrentUser, issue_id: uuid.UUID
+) -> ContinuityIssue:
+    issue = ContinuityService(db).get(issue_id)
+    EpisodeService(db, request.app.state.container).get_for_user(user, issue.episode_id)
+    return issue
+
+
+@studio_router.post("/continuity-issues/{issue_id}/resolve", response_model=IssueOut)
+def resolve_issue(
+    issue_id: uuid.UUID,
+    body: ResolveIssueIn,
+    request: Request,
+    user: CurrentUser = Depends(require_studio),
+    db: Session = Depends(get_db),
+) -> IssueOut:
+    issue = _issue_for_user(request, db, user, issue_id)
+    resolved = ContinuityService(db).resolve(issue, IssueStatus(body.status), body.note, user.id)
+    return IssueOut.model_validate(resolved)
+
+
+@studio_router.post("/continuity-issues/{issue_id}/propose-canon", status_code=201)
+def propose_canon_from_issue(
+    issue_id: uuid.UUID,
+    body: IssueCanonIn,
+    request: Request,
+    user: CurrentUser = Depends(require_studio),
+    db: Session = Depends(get_db),
+) -> dict[str, str]:
+    """Creates a pending canon proposal; the issue stays open until the next check."""
+    issue = _issue_for_user(request, db, user, issue_id)
+    episode = EpisodeService(db, request.app.state.container).get(issue.episode_id)
+    proposal = BibleService(db, request.app.state.container).propose(
+        episode.series_id,
+        ProposalIn(
+            entity_type=body.entity_type,
+            op=ProposalOp(body.op),
+            entity_id=body.entity_id,
+            payload=body.payload,
+            reason=f"From continuity issue: {issue.description}"[:2000],
+            episode_id=issue.episode_id,
+        ),
+    )
+    return {"proposal_id": str(proposal.id)}
 
 
 @studio_router.post(
