@@ -73,3 +73,8 @@ See `spec_docs/plans/README.md` and each plan's review table. Additional choices
 | 08 | Series status | `in_review` while its first episode waits for review, `published` while at least one episode is live, back to `draft` when none is (archived series are left alone). |
 | 08 | Downloads of unpublished episodes ([OPEN]) | The API stops listing them at once; the app removes local copies on its next sync (plan 11). |
 | 08 | Writer notifications | In-app list with unread count; email is not sent yet. |
+| 12 | Completion threshold ([OPEN]) | An episode counts as completed at 95% of its duration, or on a `play_completed` event. |
+| 12 | Raw event retention ([OPEN]) | 396 days (about 13 months) after aggregation (`BIBI_LISTENING_EVENT_RETENTION_DAYS`). |
+| 12 | Return rates | Of listeners first active on day D, the share active again on exactly D+1, D+7 or D+30. |
+| 12 | Aggregation | Every 15 minutes (Arq cron) from a watermark over an increasing event sequence; admins can trigger it. |
+| 12 | Event batch limits | 200 events and 256 KB per request; the size limit is enforced in middleware before parsing. |

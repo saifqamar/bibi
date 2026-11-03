@@ -74,7 +74,7 @@ class AdminCostsOut(BaseModel):
     group_by: str
     total_usd: Decimal
     rows: list[CostRow]
-    # Needs completed listening minutes (plan 12); null until then.
+    # Total cost divided by completed listening minutes in the range; null without listening.
     cost_per_finished_minute_usd: Decimal | None = None
 
 

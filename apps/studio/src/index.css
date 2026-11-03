@@ -13,6 +13,11 @@
   --color-success: oklch(0.55 0.13 150);
   --color-warning: oklch(0.7 0.15 75);
   --radius: 0.5rem;
+  /* Charts (validated: one-hue ordinal pair on the chart surface) */
+  --color-chart-surface: #fcfcfb;
+  --color-chart-bar: #86b6ef;
+  --color-chart-emphasis: #2a78d6;
+  --color-chart-axis: #52514e;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -24,6 +29,10 @@
     --color-border: oklch(0.3 0.01 270);
     --color-primary: oklch(0.72 0.13 285);
     --color-primary-foreground: oklch(0.15 0.01 270);
+    --color-chart-surface: #1a1a19;
+    --color-chart-bar: #184f95;
+    --color-chart-emphasis: #3987e5;
+    --color-chart-axis: #c3c2b7;
   }
 }
 

@@ -6,7 +6,9 @@ Run with ``arq app.worker.DefaultWorker`` (or ``DraftingWorker`` / ``VoiceWorker
 import asyncio
 from typing import Any
 
+from arq import cron
 from arq.connections import RedisSettings
+from arq.cron import CronJob
 from arq.worker import Function, func
 
 from app import job_modules  # noqa: F401  (registers every module's jobs)
@@ -23,11 +25,21 @@ from app.shared.logging import configure_logging
 from app.shared.monitoring import init_sentry
 
 
-def _wrap(spec: JobSpec) -> Function:
+def _coroutine(spec: JobSpec) -> Any:
     async def run(ctx: dict[str, Any], **kwargs: Any) -> Any:
         return await asyncio.to_thread(spec.fn, ctx["container"], **kwargs)
 
-    return func(run, name=spec.name)
+    run.__qualname__ = run.__name__ = spec.name.replace(".", "_")
+    return run
+
+
+def _wrap(spec: JobSpec) -> Function:
+    return func(_coroutine(spec), name=spec.name)
+
+
+def _crons() -> list[CronJob]:
+    # Listening analytics are aggregated every 15 minutes.
+    return [cron(_coroutine(JOB_REGISTRY["analytics.aggregate"]), minute={0, 15, 30, 45})]
 
 
 async def _startup(ctx: dict[str, Any]) -> None:
@@ -65,6 +77,6 @@ def _worker_settings(queue: str, *, max_jobs: int, cron_jobs: list[Any] | None =
     return type(f"Worker[{queue}]", (), attrs)
 
 
-DefaultWorker = _worker_settings(QUEUE_DEFAULT, max_jobs=10)
+DefaultWorker = _worker_settings(QUEUE_DEFAULT, max_jobs=10, cron_jobs=_crons())
 DraftingWorker = _worker_settings(QUEUE_DRAFTING, max_jobs=4)
 VoiceWorker = _worker_settings(QUEUE_VOICE, max_jobs=2)
