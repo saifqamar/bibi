@@ -68,3 +68,8 @@ See `spec_docs/plans/README.md` and each plan's review table. Additional choices
 | 07 | Unassigned characters | Read by the narrator voice and flagged on the line, like unknown speakers. |
 | 07 | Fixing a line's text | Saves a new draft version but keeps the episode in its audio status (no continuity re-run); only that line is re-recorded. |
 | 07 | Storage format | Per-line WAV (24 kHz mono) for reuse; the episode as MP3 at 96 kbps. |
+| 08 | Scheduled publishing ([OPEN]) | Not built (default): approve can publish immediately; otherwise an admin publishes later by hand. |
+| 08 | What listeners hear while a published episode is edited | The last published audio stays live (`published_audio_id`) until a new version is approved and published. |
+| 08 | Series status | `in_review` while its first episode waits for review, `published` while at least one episode is live, back to `draft` when none is (archived series are left alone). |
+| 08 | Downloads of unpublished episodes ([OPEN]) | The API stops listing them at once; the app removes local copies on its next sync (plan 11). |
+| 08 | Writer notifications | In-app list with unread count; email is not sent yet. |
