@@ -13,12 +13,18 @@ from app.modules.ai.adapters.ports import (
     TTSPort,
     TTSResult,
 )
+from app.modules.ai.continuity import ContinuityService
+from app.modules.ai.costs import CostService
 from app.modules.ai.metering import Metered, UsageContext, call_with_retry
 from app.modules.ai.models import RunStatus
 from app.modules.ai.runs import RunService
+from app.modules.ai.schemas import CostSummary
 
 __all__ = [
     "EMBEDDING_DIM",
+    "ContinuityService",
+    "CostService",
+    "CostSummary",
     "EmbeddingPort",
     "LLMMessage",
     "LLMPort",
