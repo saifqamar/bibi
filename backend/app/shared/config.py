@@ -52,6 +52,9 @@ class Settings(BaseSettings):
     tts_backend: str = "fake"  # fake (provider [OPEN])
     tracing_backend: str = "logging"  # logging | noop
 
+    # Listening data
+    listening_event_retention_days: int = 396  # about 13 months ([OPEN] in spec 12)
+
     # Audio production
     tts_concurrency: int = 4
     audio_target_lufs: float = -16.0  # [OPEN] in spec 07; common spoken-word target

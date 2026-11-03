@@ -18,6 +18,7 @@ from app.modules.ai.schemas import (
     PurposeCost,
     SeriesCostOut,
 )
+from app.modules.analytics import AnalyticsService
 from app.modules.catalog import CatalogService
 from app.modules.identity import CurrentUser
 from app.modules.writing import EpisodeService
@@ -39,6 +40,7 @@ _SUMS = (
 class CostService:
     def __init__(self, db: Session, container: "Container") -> None:
         self.db = db
+        self.container = container
         self.catalog = CatalogService(db, container)
         self.episodes = EpisodeService(db, container)
 
@@ -150,12 +152,17 @@ class CostService:
             )
             for key, cost, inp, out, emb, tts in rows
         ]
+        total = sum((r.cost_usd for r in result), ZERO)
+        minutes = AnalyticsService(self.db, self.container).finished_minutes(start, end)
         return AdminCostsOut(
             from_date=start,
             to_date=end,
             group_by=group_by,
-            total_usd=sum((r.cost_usd for r in result), ZERO),
+            total_usd=total,
             rows=result,
+            cost_per_finished_minute_usd=(total / minutes).quantize(Decimal("0.000001"))
+            if minutes
+            else None,
         )
 
     def _label(self, group_by: str, key: Any) -> str:

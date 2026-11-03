@@ -7,15 +7,17 @@ from app import job_modules  # noqa: F401  (registers background jobs)
 from app.container import Container, build_container
 from app.modules.admin.api.routes import routers as admin_routers
 from app.modules.ai.api.routes import routers as ai_routers
+from app.modules.analytics.api.routes import routers as analytics_routers
 from app.modules.audio.api.routes import routers as audio_routers
 from app.modules.catalog.api.routes import routers as catalog_routers
 from app.modules.identity.api.routes import routers as identity_routers
+from app.modules.listening.api.routes import routers as listening_routers
 from app.modules.writing.api.routes import routers as writing_routers
 from app.shared import media
 from app.shared.config import Settings, get_settings
 from app.shared.errors import install_error_handlers
 from app.shared.logging import configure_logging
-from app.shared.middleware import RequestIdMiddleware
+from app.shared.middleware import BodySizeLimitMiddleware, RequestIdMiddleware
 from app.shared.monitoring import init_sentry
 
 
@@ -35,6 +37,9 @@ def create_app(settings: Settings | None = None, container: Container | None = N
         allow_headers=["*"],
         expose_headers=["X-Request-ID"],
     )
+    app.add_middleware(
+        BodySizeLimitMiddleware, limits={f"{settings.api_prefix}/events": 256 * 1024}
+    )
     app.add_middleware(RequestIdMiddleware)
     install_error_handlers(app)
 
@@ -51,6 +56,8 @@ def create_app(settings: Settings | None = None, container: Container | None = N
         *ai_routers,
         *audio_routers,
         *admin_routers,
+        *listening_routers,
+        *analytics_routers,
     ]:
         api.include_router(router)
 
