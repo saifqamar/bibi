@@ -4,7 +4,13 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-from app.modules.writing.models import PlotThreadStatus, ProposalOp, ProposalStatus
+from app.modules.writing.models import (
+    DraftSource,
+    EpisodeStatus,
+    PlotThreadStatus,
+    ProposalOp,
+    ProposalStatus,
+)
 
 Name = Field(min_length=1, max_length=120)
 LongText = Field(default="", max_length=10_000)
@@ -219,3 +225,97 @@ class ProposalAcceptIn(BaseModel):
 
 class InUseOut(BaseModel):
     references: list[str]
+
+
+# Episodes ----------------------------------------------------------------------------------
+
+
+class Beat(BaseModel):
+    id: str = Field(min_length=1, max_length=40)
+    text: str = Field(min_length=1, max_length=2000)
+
+
+class EpisodeCreate(_In):
+    title: str = Field(default="", max_length=200)
+
+
+class EpisodeUpdate(_In):
+    title: str | None = Field(default=None, max_length=200)
+
+
+class EpisodeOrderIn(_In):
+    episode_ids: list[uuid.UUID] = Field(max_length=2000)
+
+
+class PlanIn(_In):
+    beats: list[Beat] = Field(default_factory=list, max_length=60)
+    notes: str = Field(default="", max_length=10_000)
+
+
+class PlanOut(BaseModel):
+    beats: list[Beat]
+    notes: str
+
+
+class EpisodeOut(BaseModel):
+    id: uuid.UUID
+    series_id: uuid.UUID
+    number: int
+    title: str
+    status: EpisodeStatus
+    current_version: int | None
+    word_count: int
+    estimated_seconds: int
+    target_seconds: int
+    is_free: bool | None
+    published_at: datetime | None
+    plan: PlanOut
+    created_at: datetime
+    updated_at: datetime
+
+
+class DraftIn(_In):
+    text: str = Field(max_length=200_000)
+    base_version: int | None = Field(
+        default=None, description="Version the edit started from; null for the first draft"
+    )
+    note: str = Field(default="", max_length=500)
+
+
+class DraftSummary(BaseModel):
+    version: int
+    source: DraftSource
+    created_by: uuid.UUID | None
+    note: str
+    word_count: int
+    estimated_seconds: int
+    created_at: datetime
+
+
+class DraftOut(DraftSummary):
+    text: str
+
+
+class DiffOp(BaseModel):
+    op: Literal["equal", "insert", "delete", "replace"]
+    a_lines: list[str]
+    b_lines: list[str]
+
+
+class CompareOut(BaseModel):
+    a: int
+    b: int
+    ops: list[DiffOp]
+
+
+class StatusIn(_In):
+    status: EpisodeStatus
+
+
+class ScriptLineOut(BaseModel):
+    index: int
+    kind: Literal["dialogue", "narration", "scene_break"]
+    speaker: str | None
+    text: str
+    paragraph: int
+    unknown_speaker: str | None

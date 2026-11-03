@@ -13,6 +13,7 @@ from sqlalchemy import (
     Integer,
     String,
     Text,
+    UniqueConstraint,
 )
 from sqlalchemy.dialects.postgresql import ARRAY, JSONB
 from sqlalchemy.orm import Mapped, mapped_column
@@ -123,8 +124,9 @@ class CanonProposal(UUIDPrimaryKey, TimestampMixin, Base):
     __table_args__ = (Index("ix_canon_proposals_series_status", "series_id", "status"),)
 
     series_id: Mapped[uuid.UUID] = _series_fk()
-    # Episodes arrive in plan 04; the FK is added there.
-    episode_id: Mapped[uuid.UUID | None] = mapped_column(nullable=True)
+    episode_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("episodes.id", ondelete="SET NULL"), nullable=True
+    )
     entity_type: Mapped[str] = mapped_column(String(40))
     op: Mapped[ProposalOp] = mapped_column(_enum(ProposalOp, "proposal_op"))
     entity_id: Mapped[uuid.UUID | None] = mapped_column(nullable=True)
@@ -137,3 +139,65 @@ class CanonProposal(UUIDPrimaryKey, TimestampMixin, Base):
         ForeignKey("users.id", ondelete="SET NULL"), nullable=True
     )
     decided_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class EpisodeStatus(StrEnum):
+    PLANNED = "planned"
+    DRAFTING = "drafting"
+    READY_FOR_AUDIO = "ready_for_audio"
+    AUDIO_READY = "audio_ready"
+    IN_REVIEW = "in_review"
+    CHANGES_REQUESTED = "changes_requested"
+    APPROVED = "approved"
+    PUBLISHED = "published"
+
+
+class DraftSource(StrEnum):
+    AI = "ai"
+    HUMAN = "human"
+
+
+class Episode(UUIDPrimaryKey, TimestampMixin, Base):
+    __tablename__ = "episodes"
+    __table_args__ = (UniqueConstraint("series_id", "number", name="uq_episodes_series_number"),)
+
+    series_id: Mapped[uuid.UUID] = _series_fk()
+    number: Mapped[int] = mapped_column(Integer)
+    title: Mapped[str] = mapped_column(String(200), default="")
+    status: Mapped[EpisodeStatus] = mapped_column(
+        _enum(EpisodeStatus, "episode_status"), default=EpisodeStatus.PLANNED
+    )
+    current_draft_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("episode_drafts.id", ondelete="SET NULL", use_alter=True), nullable=True
+    )
+    # Audio assets arrive in plan 07; the FK is added there.
+    current_audio_id: Mapped[uuid.UUID | None] = mapped_column(nullable=True)
+    # None = follow the series' free episode count; True/False = admin override (plan 09).
+    is_free: Mapped[bool | None] = mapped_column(Boolean, nullable=True)
+    published_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class EpisodePlan(UUIDPrimaryKey, TimestampMixin, Base):
+    __tablename__ = "episode_plans"
+
+    episode_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("episodes.id", ondelete="CASCADE"), unique=True
+    )
+    beats: Mapped[list[dict[str, Any]]] = mapped_column(JSONB, default=list)
+    notes: Mapped[str] = mapped_column(Text, default="")
+
+
+class EpisodeDraft(UUIDPrimaryKey, TimestampMixin, Base):
+    __tablename__ = "episode_drafts"
+    __table_args__ = (UniqueConstraint("episode_id", "version", name="uq_episode_drafts_version"),)
+
+    episode_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("episodes.id", ondelete="CASCADE"), index=True
+    )
+    version: Mapped[int] = mapped_column(Integer)
+    text: Mapped[str] = mapped_column(Text)
+    source: Mapped[DraftSource] = mapped_column(_enum(DraftSource, "draft_source"))
+    created_by: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("users.id", ondelete="SET NULL"), nullable=True
+    )
+    note: Mapped[str] = mapped_column(String(500), default="")

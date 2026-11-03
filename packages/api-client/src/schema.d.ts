@@ -446,6 +446,145 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/studio/episodes/{episode_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Episode */
+        get: operations["get_episode_api_v1_studio_episodes__episode_id__get"];
+        /** Update Episode */
+        put: operations["update_episode_api_v1_studio_episodes__episode_id__put"];
+        post?: never;
+        /** Delete Episode */
+        delete: operations["delete_episode_api_v1_studio_episodes__episode_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/studio/episodes/{episode_id}/drafts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Drafts */
+        get: operations["list_drafts_api_v1_studio_episodes__episode_id__drafts_get"];
+        put?: never;
+        /** Save Draft */
+        post: operations["save_draft_api_v1_studio_episodes__episode_id__drafts_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/studio/episodes/{episode_id}/drafts/compare": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Compare Drafts */
+        get: operations["compare_drafts_api_v1_studio_episodes__episode_id__drafts_compare_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/studio/episodes/{episode_id}/drafts/{version}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Draft */
+        get: operations["get_draft_api_v1_studio_episodes__episode_id__drafts__version__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/studio/episodes/{episode_id}/drafts/{version}/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Restore Draft */
+        post: operations["restore_draft_api_v1_studio_episodes__episode_id__drafts__version__restore_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/studio/episodes/{episode_id}/plan": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Set Plan */
+        put: operations["set_plan_api_v1_studio_episodes__episode_id__plan_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/studio/episodes/{episode_id}/script": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Script */
+        get: operations["get_script_api_v1_studio_episodes__episode_id__script_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/studio/episodes/{episode_id}/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Set Status */
+        post: operations["set_status_api_v1_studio_episodes__episode_id__status_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/studio/series": {
         parameters: {
             query?: never;
@@ -564,6 +703,41 @@ export interface paths {
         put?: never;
         /** Upload Cover */
         post: operations["upload_cover_api_v1_studio_series__series_id__cover_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/studio/series/{series_id}/episodes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Episodes */
+        get: operations["list_episodes_api_v1_studio_series__series_id__episodes_get"];
+        put?: never;
+        /** Create Episode */
+        post: operations["create_episode_api_v1_studio_series__series_id__episodes_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/studio/series/{series_id}/episodes/order": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Reorder Episodes */
+        put: operations["reorder_episodes_api_v1_studio_series__series_id__episodes_order_put"];
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -809,6 +983,13 @@ export interface components {
             /** Title */
             title: string;
         };
+        /** Beat */
+        Beat: {
+            /** Id */
+            id: string;
+            /** Text */
+            text: string;
+        };
         /** BibleOut */
         BibleOut: {
             /** Characters */
@@ -902,6 +1083,15 @@ export interface components {
             /** Voice Notes */
             voice_notes?: string | null;
         };
+        /** CompareOut */
+        CompareOut: {
+            /** A */
+            a: number;
+            /** B */
+            b: number;
+            /** Ops */
+            ops: components["schemas"]["DiffOp"][];
+        };
         /**
          * CurrentUser
          * @description The signed-in user, as seen by every module's route dependencies.
@@ -917,6 +1107,142 @@ export interface components {
              */
             id: string;
             role: components["schemas"]["Role"];
+        };
+        /** DiffOp */
+        DiffOp: {
+            /** A Lines */
+            a_lines: string[];
+            /** B Lines */
+            b_lines: string[];
+            /**
+             * Op
+             * @enum {string}
+             */
+            op: "equal" | "insert" | "delete" | "replace";
+        };
+        /** DraftIn */
+        DraftIn: {
+            /**
+             * Base Version
+             * @description Version the edit started from; null for the first draft
+             */
+            base_version?: number | null;
+            /**
+             * Note
+             * @default
+             */
+            note: string;
+            /** Text */
+            text: string;
+        };
+        /** DraftOut */
+        DraftOut: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Created By */
+            created_by: string | null;
+            /** Estimated Seconds */
+            estimated_seconds: number;
+            /** Note */
+            note: string;
+            source: components["schemas"]["DraftSource"];
+            /** Text */
+            text: string;
+            /** Version */
+            version: number;
+            /** Word Count */
+            word_count: number;
+        };
+        /**
+         * DraftSource
+         * @enum {string}
+         */
+        DraftSource: "ai" | "human";
+        /** DraftSummary */
+        DraftSummary: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Created By */
+            created_by: string | null;
+            /** Estimated Seconds */
+            estimated_seconds: number;
+            /** Note */
+            note: string;
+            source: components["schemas"]["DraftSource"];
+            /** Version */
+            version: number;
+            /** Word Count */
+            word_count: number;
+        };
+        /** EpisodeCreate */
+        EpisodeCreate: {
+            /**
+             * Title
+             * @default
+             */
+            title: string;
+        };
+        /** EpisodeOrderIn */
+        EpisodeOrderIn: {
+            /** Episode Ids */
+            episode_ids: string[];
+        };
+        /** EpisodeOut */
+        EpisodeOut: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Current Version */
+            current_version: number | null;
+            /** Estimated Seconds */
+            estimated_seconds: number;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Is Free */
+            is_free: boolean | null;
+            /** Number */
+            number: number;
+            plan: components["schemas"]["PlanOut"];
+            /** Published At */
+            published_at: string | null;
+            /**
+             * Series Id
+             * Format: uuid
+             */
+            series_id: string;
+            status: components["schemas"]["EpisodeStatus"];
+            /** Target Seconds */
+            target_seconds: number;
+            /** Title */
+            title: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            /** Word Count */
+            word_count: number;
+        };
+        /**
+         * EpisodeStatus
+         * @enum {string}
+         */
+        EpisodeStatus: "planned" | "drafting" | "ready_for_audio" | "audio_ready" | "in_review" | "changes_requested" | "approved" | "published";
+        /** EpisodeUpdate */
+        EpisodeUpdate: {
+            /** Title */
+            title?: string | null;
         };
         /** HTTPValidationError */
         HTTPValidationError: {
@@ -1115,6 +1441,23 @@ export interface components {
             offset: number;
             /** Total */
             total: number;
+        };
+        /** PlanIn */
+        PlanIn: {
+            /** Beats */
+            beats?: components["schemas"]["Beat"][];
+            /**
+             * Notes
+             * @default
+             */
+            notes: string;
+        };
+        /** PlanOut */
+        PlanOut: {
+            /** Beats */
+            beats: components["schemas"]["Beat"][];
+            /** Notes */
+            notes: string;
         };
         /** PlotThreadCreate */
         PlotThreadCreate: {
@@ -1319,6 +1662,24 @@ export interface components {
          * @enum {string}
          */
         Role: "listener" | "writer" | "admin";
+        /** ScriptLineOut */
+        ScriptLineOut: {
+            /** Index */
+            index: number;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "dialogue" | "narration" | "scene_break";
+            /** Paragraph */
+            paragraph: number;
+            /** Speaker */
+            speaker: string | null;
+            /** Text */
+            text: string;
+            /** Unknown Speaker */
+            unknown_speaker: string | null;
+        };
         /** SeriesCreate */
         SeriesCreate: {
             /** Language */
@@ -1458,6 +1819,10 @@ export interface components {
             id_token: string;
             /** Provider */
             provider: string;
+        };
+        /** StatusIn */
+        StatusIn: {
+            status: components["schemas"]["EpisodeStatus"];
         };
         /** TimelineEventCreate */
         TimelineEventCreate: {
@@ -2560,6 +2925,366 @@ export interface operations {
             };
         };
     };
+    get_episode_api_v1_studio_episodes__episode_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                episode_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EpisodeOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_episode_api_v1_studio_episodes__episode_id__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                episode_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EpisodeUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EpisodeOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_episode_api_v1_studio_episodes__episode_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                episode_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_drafts_api_v1_studio_episodes__episode_id__drafts_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                episode_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DraftSummary"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    save_draft_api_v1_studio_episodes__episode_id__drafts_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                episode_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DraftIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DraftOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    compare_drafts_api_v1_studio_episodes__episode_id__drafts_compare_get: {
+        parameters: {
+            query: {
+                a: number;
+                b: number;
+            };
+            header?: never;
+            path: {
+                episode_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompareOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_draft_api_v1_studio_episodes__episode_id__drafts__version__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                episode_id: string;
+                version: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DraftOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    restore_draft_api_v1_studio_episodes__episode_id__drafts__version__restore_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                episode_id: string;
+                version: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DraftOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    set_plan_api_v1_studio_episodes__episode_id__plan_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                episode_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PlanIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EpisodeOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_script_api_v1_studio_episodes__episode_id__script_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                episode_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ScriptLineOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    set_status_api_v1_studio_episodes__episode_id__status_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                episode_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StatusIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EpisodeOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     list_series_api_v1_studio_series_get: {
         parameters: {
             query?: {
@@ -2951,6 +3676,105 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["SeriesOut"];
                 };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_episodes_api_v1_studio_series__series_id__episodes_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                series_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EpisodeOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_episode_api_v1_studio_series__series_id__episodes_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                series_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EpisodeCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EpisodeOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    reorder_episodes_api_v1_studio_series__series_id__episodes_order_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                series_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EpisodeOrderIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
             /** @description Validation Error */
             422: {

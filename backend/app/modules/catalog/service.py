@@ -60,7 +60,8 @@ class CatalogService:
 
     # Series ----------------------------------------------------------------------------------
 
-    def _series(self, series_id: uuid.UUID) -> Series:
+    def get_series(self, series_id: uuid.UUID) -> Series:
+        """System read without user scoping (for other modules' internal use)."""
         series = self.db.get(Series, series_id)
         if series is None:
             raise NotFound("Series not found")
@@ -68,7 +69,7 @@ class CatalogService:
 
     def get_series_for_user(self, user: CurrentUser, series_id: uuid.UUID) -> Series:
         """Writers only see their own series (others look missing); admins see all."""
-        series = self._series(series_id)
+        series = self.get_series(series_id)
         ensure_owner_or_admin(user, series.owner_writer_id)
         return series
 
@@ -116,7 +117,7 @@ class CatalogService:
     def admin_update_series(
         self, admin: CurrentUser, series_id: uuid.UUID, data: AdminSeriesUpdate
     ) -> Series:
-        series = self._series(series_id)
+        series = self.get_series(series_id)
         changes = data.model_dump(exclude_unset=True, exclude_none=True)
         changes.pop("is_ai_assisted", None)  # can only be true; nothing to change
         archived = changes.pop("archived", None)
@@ -147,7 +148,7 @@ class CatalogService:
 
     def set_status(self, series_id: uuid.UUID, status: SeriesStatus) -> Series:
         """Used by the publishing flow (plan 08)."""
-        series = self._series(series_id)
+        series = self.get_series(series_id)
         series.status = status
         if status == SeriesStatus.PUBLISHED and series.published_at is None:
             series.published_at = datetime.now(UTC)

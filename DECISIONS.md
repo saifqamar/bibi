@@ -39,3 +39,7 @@ See `spec_docs/plans/README.md` and each plan's review table. Additional choices
 | 03 | Narrator | One character per series can be the narrator; marking another unmarks the previous one. |
 | 03 | Accepting a proposal | The writer may edit the proposed payload before accepting; it is validated like a normal edit. Proposals for deleted entries become `proposal_stale`. |
 | 03 | Bible search | Case-insensitive match on names, titles and descriptions across all sections. |
+| 04 | Editor concurrency ([OPEN] lock vs check) | Optimistic check: every save sends `base_version`; a stale save gets `409 version_conflict`. |
+| 04 | Saving text after audio, review or approval | Any text change moves the episode back to `drafting` (audio and review must be redone). Editing is blocked while `in_review`. |
+| 04 | Duration estimate | 150 words per minute, shown live in the editor and stored per version. |
+| 04 | Episode numbering | New episodes are numbered last; deleting a planned episode closes the gap; reordering cannot move published episodes. |
