@@ -1,13 +1,14 @@
 import { Route, Routes } from "react-router";
-
-function WriterHome() {
-  return <h1 className="text-2xl font-bold">My series</h1>;
-}
+import { NewSeriesPage } from "./series/NewSeriesPage";
+import { SeriesListPage } from "./series/SeriesListPage";
+import { SeriesWorkspace } from "./series/SeriesWorkspace";
 
 export default function WriterApp() {
   return (
     <Routes>
-      <Route index element={<WriterHome />} />
+      <Route index element={<SeriesListPage />} />
+      <Route path="series/new" element={<NewSeriesPage />} />
+      <Route path="series/:seriesId/*" element={<SeriesWorkspace />} />
     </Routes>
   );
 }
