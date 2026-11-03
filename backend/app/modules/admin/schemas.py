@@ -26,6 +26,8 @@ class ReviewItemOut(BaseModel):
 
 class ReviewDetailOut(BaseModel):
     item: ReviewItemOut
+    episode_status: str
+    is_live: bool
     text: str
     audio: AudioAssetOut | None
     continuity: list[dict[str, Any]]

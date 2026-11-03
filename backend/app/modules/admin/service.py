@@ -170,6 +170,8 @@ class ReviewService:
         issues = ContinuityService(self.db).issues(episode.id)
         return ReviewDetailOut(
             item=self.item_out(item),
+            episode_status=episode.status.value,
+            is_live=episode.published_audio_id is not None,
             text=text_draft.text,
             audio=self.audio.asset_out(asset)
             if asset and asset.id == item.audio_asset_id

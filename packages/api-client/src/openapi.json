@@ -3026,6 +3026,14 @@
           "cost": {
             "$ref": "#/components/schemas/CostSummary"
           },
+          "episode_status": {
+            "title": "Episode Status",
+            "type": "string"
+          },
+          "is_live": {
+            "title": "Is Live",
+            "type": "boolean"
+          },
           "item": {
             "$ref": "#/components/schemas/ReviewItemOut"
           },
@@ -3043,6 +3051,8 @@
         },
         "required": [
           "item",
+          "episode_status",
+          "is_live",
           "text",
           "audio",
           "continuity",

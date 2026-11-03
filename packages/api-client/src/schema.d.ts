@@ -2689,6 +2689,10 @@ export interface components {
                 [key: string]: unknown;
             }[];
             cost: components["schemas"]["CostSummary"];
+            /** Episode Status */
+            episode_status: string;
+            /** Is Live */
+            is_live: boolean;
             item: components["schemas"]["ReviewItemOut"];
             /** Text */
             text: string;

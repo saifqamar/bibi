@@ -106,6 +106,7 @@ def test_full_review_and_publish(
     assert [(i["series_title"], i["episode_title"]) for i in items] == [("Harbour", "Fog")]
     detail = client.get(f"{ADMIN}/review-items/{items[0]['id']}", headers=admin.headers).json()
     assert detail["text"] == TEXT
+    assert (detail["episode_status"], detail["is_live"]) == ("in_review", False)
     assert detail["audio"]["url"].startswith("http://testserver/media/")
     assert float(detail["cost"]["total_usd"]) > 0
     assert [v["version"] for v in detail["versions"]] == [1]
