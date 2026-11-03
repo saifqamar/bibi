@@ -20,4 +20,5 @@ pnpm -r --if-present typecheck
 pnpm -r --if-present lint
 pnpm -r --if-present test
 pnpm --filter @bibi/studio check-bundle >/dev/null
+NEXT_TELEMETRY_DISABLED=1 pnpm --filter @bibi/web build >/dev/null
 echo "All checks passed."

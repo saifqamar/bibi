@@ -82,3 +82,7 @@ jobs:
         run: pnpm -r --if-present test
       - name: Admin area stays a lazy chunk
         run: pnpm --filter @bibi/studio check-bundle
+      - name: Website builds
+        run: pnpm --filter @bibi/web build
+        env:
+          NEXT_TELEMETRY_DISABLED: "1"

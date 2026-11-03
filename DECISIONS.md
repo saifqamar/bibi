@@ -20,6 +20,7 @@ Records every deviation from `BIBI_SPEC.md` / `spec_docs/`, every `[CHECK]` item
 | D8 | Loudness "measured with a BS.1770 implementation in `audio/loudness.py`" (plan 07) | ffmpeg's `ebur128` filter (EBU R128 / BS.1770) plus a linear gain; peaks capped at -1.5 dBFS using sample peak | A pure-Python K-weighting filter is far too slow for 16-minute episodes; ffmpeg is already required for MP3. True-peak oversampling skipped for speed. |
 | D9 | Background audio with `react-native-track-player` (plan 10/11) | `expo-audio` (Expo SDK 58): background playback, lock-screen metadata and controls | track-player 4.x does not support the current React Native; its v5 is an alpha. expo-audio ships with the SDK. |
 | D10 | Tailwind via NativeWind (version not stated) | NativeWind 4 with Tailwind CSS 3.4 in the mobile app (Studio stays on Tailwind 4) | NativeWind 4 requires Tailwind 3. |
+| D11 | Website uses Zustand and shadcn/ui (spec 13 FR7) | Neither yet: Tailwind components written in the app; TanStack Query only in the sample-player island | Pages are server-rendered with no client state to share; add them when a client feature needs them. |
 | D6 | Embeddings via `EmbeddingPort` | Deterministic fake embeddings (1536 dimensions) | Anthropic has no embeddings API and the embedding provider is not chosen. |
 
 ## [CHECK] items verified
@@ -88,4 +89,11 @@ See `spec_docs/plans/README.md` and each plan's review table. Additional choices
 | 11 | Unpublished downloads ([OPEN] plan 08) | Removed from the device on the next sync (`available: false` from `/me/downloads`). |
 | 11 | "Previous" | Restarts the episode after its first 5 seconds; before that it goes to the previous episode. |
 | 11 | Sign-out | Stops playback and deletes downloads from the device; progress and events already sent stay on the server. |
+| 13 | Public read API | A `website` module serves `/api/v1/public/*`: no sign-in, published series only (archived ones are hidden), `Cache-Control: public, max-age=60, s-maxage=300`, 300 requests a minute per IP. |
+| 13 | Sample source ([OPEN] spec 13) | First 90 s (`BIBI_PUBLIC_SAMPLE_SECONDS`) of the first live episode, 2 s fade-out, cut when episode 1 is published. Its signed URL lives 10 minutes; full-episode URLs are never public. |
+| 13 | Page freshness | Series, shelf, landing and sitemap pages revalidate every 5 minutes, so an unpublished series is gone (404) within that window. |
+| 13 | URLs | `/series/{id}/{slug}`; an outdated slug or `/series/{id}` redirects (308) to the canonical URL. |
+| 13 | Covers | Plain `<img>` instead of `next/image`: covers are signed, expiring URLs that the image optimiser would cache past expiry. |
+| 13 | App hand-off | "Listen in the app" opens `bibi://series/{id}`; store links appear when `NEXT_PUBLIC_APP_STORE_URL` / `NEXT_PUBLIC_PLAY_STORE_URL` are set. |
+| 13 | Language switch | Not shown: only English launches (spec: only if more languages launch). |
 

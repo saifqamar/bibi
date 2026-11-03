@@ -3133,6 +3133,31 @@
         "title": "ProposalStatus",
         "type": "string"
       },
+      "PublicSeriesDetail": {
+        "properties": {
+          "episodes": {
+            "items": {
+              "$ref": "#/components/schemas/ListenerEpisodeOut"
+            },
+            "title": "Episodes",
+            "type": "array"
+          },
+          "has_sample": {
+            "title": "Has Sample",
+            "type": "boolean"
+          },
+          "series": {
+            "$ref": "#/components/schemas/ListenerSeriesOut"
+          }
+        },
+        "required": [
+          "series",
+          "episodes",
+          "has_sample"
+        ],
+        "title": "PublicSeriesDetail",
+        "type": "object"
+      },
       "PurposeCost": {
         "properties": {
           "cost_usd": {
@@ -3762,6 +3787,30 @@
         "title": "RunStatus",
         "type": "string"
       },
+      "SampleOut": {
+        "properties": {
+          "duration_seconds": {
+            "title": "Duration Seconds",
+            "type": "string"
+          },
+          "episode_number": {
+            "title": "Episode Number",
+            "type": "integer"
+          },
+          "url": {
+            "description": "Signed, short-lived URL of the sample clip only",
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "url",
+          "duration_seconds",
+          "episode_number"
+        ],
+        "title": "SampleOut",
+        "type": "object"
+      },
       "ScriptLineOut": {
         "properties": {
           "index": {
@@ -4264,6 +4313,38 @@
           "password"
         ],
         "title": "SignupIn",
+        "type": "object"
+      },
+      "SitemapEntry": {
+        "properties": {
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "updated_at"
+        ],
+        "title": "SitemapEntry",
         "type": "object"
       },
       "SocialLoginIn": {
@@ -7735,6 +7816,296 @@
         "summary": "Put Progress",
         "tags": [
           "listening"
+        ]
+      }
+    },
+    "/api/v1/public/series": {
+      "get": {
+        "operationId": "list_series_api_v1_public_series_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_ListenerSeriesOut_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Series",
+        "tags": [
+          "public website"
+        ]
+      }
+    },
+    "/api/v1/public/series/{series_id}": {
+      "get": {
+        "operationId": "get_series_api_v1_public_series__series_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "series_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Series Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicSeriesDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Series",
+        "tags": [
+          "public website"
+        ]
+      }
+    },
+    "/api/v1/public/series/{series_id}/sample": {
+      "get": {
+        "operationId": "get_sample_api_v1_public_series__series_id__sample_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "series_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Series Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SampleOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Sample",
+        "tags": [
+          "public website"
+        ]
+      }
+    },
+    "/api/v1/public/shelves": {
+      "get": {
+        "operationId": "list_shelves_api_v1_public_shelves_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "items_per_shelf",
+            "required": false,
+            "schema": {
+              "default": 12,
+              "maximum": 50,
+              "minimum": 1,
+              "title": "Items Per Shelf",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_ListenerShelfOut_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Shelves",
+        "tags": [
+          "public website"
+        ]
+      }
+    },
+    "/api/v1/public/shelves/{shelf_id}": {
+      "get": {
+        "operationId": "get_shelf_api_v1_public_shelves__shelf_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "shelf_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Shelf Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListenerShelfOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Shelf",
+        "tags": [
+          "public website"
+        ]
+      }
+    },
+    "/api/v1/public/sitemap": {
+      "get": {
+        "operationId": "sitemap_api_v1_public_sitemap_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/SitemapEntry"
+                  },
+                  "title": "Response Sitemap Api V1 Public Sitemap Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Sitemap",
+        "tags": [
+          "public website"
         ]
       }
     },

@@ -63,6 +63,14 @@ def to_standard_pcm(wav_bytes: bytes) -> bytes:
     return result.stdout
 
 
+def decode(data: bytes) -> bytes:
+    """Raw PCM frames (mono, 16-bit, 24 kHz) from any audio ffmpeg can read, e.g. MP3."""
+    return _run(
+        ["-i", "pipe:0", "-ac", str(CHANNELS), "-ar", str(SAMPLE_RATE), "-f", "s16le", "pipe:1"],
+        data,
+    ).stdout
+
+
 def frames_to_wav(frames: bytes) -> bytes:
     buffer = io.BytesIO()
     with wave.open(buffer, "wb") as wav:

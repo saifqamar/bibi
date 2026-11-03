@@ -19,6 +19,7 @@ source_modules =
     app.modules.admin
     app.modules.billing
     app.modules.notifications
+    app.modules.website
 forbidden_modules =
     app.modules.identity.models
     app.modules.identity.repository
@@ -43,6 +44,7 @@ source_modules =
     app.modules.admin
     app.modules.billing
     app.modules.notifications
+    app.modules.website
 forbidden_modules =
     app.modules.catalog.models
     app.modules.catalog.repository
@@ -67,6 +69,7 @@ source_modules =
     app.modules.admin
     app.modules.billing
     app.modules.notifications
+    app.modules.website
 forbidden_modules =
     app.modules.writing.models
     app.modules.writing.repository
@@ -91,6 +94,7 @@ source_modules =
     app.modules.admin
     app.modules.billing
     app.modules.notifications
+    app.modules.website
 forbidden_modules =
     app.modules.ai.models
     app.modules.ai.repository
@@ -115,6 +119,7 @@ source_modules =
     app.modules.admin
     app.modules.billing
     app.modules.notifications
+    app.modules.website
 forbidden_modules =
     app.modules.audio.models
     app.modules.audio.repository
@@ -139,6 +144,7 @@ source_modules =
     app.modules.admin
     app.modules.billing
     app.modules.notifications
+    app.modules.website
 forbidden_modules =
     app.modules.listening.models
     app.modules.listening.repository
@@ -163,6 +169,7 @@ source_modules =
     app.modules.admin
     app.modules.billing
     app.modules.notifications
+    app.modules.website
 forbidden_modules =
     app.modules.analytics.models
     app.modules.analytics.repository
@@ -187,6 +194,7 @@ source_modules =
     app.modules.analytics
     app.modules.billing
     app.modules.notifications
+    app.modules.website
 forbidden_modules =
     app.modules.admin.models
     app.modules.admin.repository
@@ -211,6 +219,7 @@ source_modules =
     app.modules.analytics
     app.modules.admin
     app.modules.notifications
+    app.modules.website
 forbidden_modules =
     app.modules.billing.models
     app.modules.billing.repository
@@ -235,6 +244,7 @@ source_modules =
     app.modules.analytics
     app.modules.admin
     app.modules.billing
+    app.modules.website
 forbidden_modules =
     app.modules.notifications.models
     app.modules.notifications.repository
@@ -244,6 +254,26 @@ forbidden_modules =
     app.modules.notifications.ports
     app.modules.notifications.adapters
     app.modules.notifications.graphs
+
+[importlinter:contract:boundary-website]
+name = Only the public package of 'website' may be imported by other modules
+type = forbidden
+allow_indirect_imports = True
+source_modules =
+    app.modules.identity
+    app.modules.catalog
+    app.modules.writing
+    app.modules.ai
+    app.modules.audio
+    app.modules.listening
+    app.modules.analytics
+    app.modules.admin
+    app.modules.billing
+    app.modules.notifications
+forbidden_modules =
+    app.modules.website.service
+    app.modules.website.api
+    app.modules.website.schemas
 
 [importlinter:contract:langgraph-only-in-ai]
 name = LangGraph is only used inside the ai module
@@ -259,6 +289,7 @@ source_modules =
     app.modules.admin
     app.modules.billing
     app.modules.notifications
+    app.modules.website
 forbidden_modules =
     langgraph
     langchain_core

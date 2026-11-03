@@ -263,6 +263,45 @@ class CatalogService:
         series = self.db.get(Series, series_id)
         return series if series and series.status in LISTENER_VISIBLE else None
 
+    # Public website views (no sign-in): published series only, never archived ones.
+
+    def public_series(self, params: PageParams) -> tuple[list[ListenerSeriesOut], int]:
+        stmt = (
+            select(Series)
+            .where(Series.status == SeriesStatus.PUBLISHED)
+            .order_by(Series.play_count.desc(), Series.title)
+        )
+        total = self.db.scalar(select(func.count()).select_from(stmt.order_by(None).subquery()))
+        rows = list(self.db.scalars(stmt.limit(params.limit).offset(params.offset)))
+        return self._listener_out(rows), total or 0
+
+    def get_public_series(self, series_id: uuid.UUID) -> ListenerSeriesOut:
+        series = self.db.get(Series, series_id)
+        if series is None or series.status != SeriesStatus.PUBLISHED:
+            raise NotFound("Series not found")
+        return self._listener_out([series])[0]
+
+    def public_shelf(self, shelf_id: uuid.UUID, limit: int) -> ListenerShelfOut:
+        shelf = self.db.get(Shelf, shelf_id)
+        series = (
+            list(
+                self.db.scalars(
+                    select(Series)
+                    .join(ShelfItem, ShelfItem.series_id == Series.id)
+                    .where(ShelfItem.shelf_id == shelf_id, Series.status == SeriesStatus.PUBLISHED)
+                    .order_by(ShelfItem.position)
+                    .limit(limit)
+                )
+            )
+            if shelf
+            else []
+        )
+        if shelf is None or not series:
+            raise NotFound("Shelf not found")
+        return ListenerShelfOut(
+            id=shelf.id, title=shelf.title, kind=shelf.kind, series=self._listener_out(series)
+        )
+
     def search(self, q: str, params: PageParams) -> tuple[list[ListenerSeriesOut], int]:
         stmt = (
             select(Series)
