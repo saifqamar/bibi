@@ -1,10 +1,11 @@
 import { screen } from "@testing-library/react";
-import { beforeEach, describe, expect, it } from "vitest";
-import { renderApp, signIn } from "@/test/render";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { jsonResponse, mockFetch, renderApp, signIn } from "@/test/render";
 import { useAuth } from "./store";
 
 describe("route guards", () => {
   beforeEach(() => useAuth.getState().clear());
+  afterEach(() => vi.unstubAllGlobals());
 
   it("sends signed-out users to /login", () => {
     const { router } = renderApp("/writer");
@@ -15,13 +16,17 @@ describe("route guards", () => {
     signIn("writer");
     const { router } = renderApp("/admin");
     expect(router.state.location.pathname).toBe("/writer");
-    expect(screen.queryByText("Admin")).not.toBeInTheDocument();
+    expect(screen.queryByText("Review queue")).not.toBeInTheDocument();
   });
 
   it("lets admins open both areas", async () => {
+    mockFetch([
+      { path: "/api/v1/admin/review-queue", respond: () => jsonResponse({ items: [], total: 0, limit: 100, offset: 0 }) },
+      { path: "/api/v1/studio/series", respond: () => jsonResponse({ items: [], total: 0, limit: 100, offset: 0 }) },
+    ]);
     signIn("admin");
     const { router } = renderApp("/admin");
-    expect(await screen.findByRole("heading", { name: "Admin" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Review queue" })).toBeInTheDocument();
     await router.navigate("/writer");
     expect(await screen.findByRole("heading", { name: "My series" })).toBeInTheDocument();
   });
