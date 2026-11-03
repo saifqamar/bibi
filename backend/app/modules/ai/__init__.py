@@ -13,7 +13,7 @@ from app.modules.ai.adapters.ports import (
     TTSPort,
     TTSResult,
 )
-from app.modules.ai.metering import Metered, UsageContext
+from app.modules.ai.metering import Metered, UsageContext, call_with_retry
 from app.modules.ai.models import RunStatus
 from app.modules.ai.runs import RunService
 
@@ -29,4 +29,5 @@ __all__ = [
     "TTSPort",
     "TTSResult",
     "UsageContext",
+    "call_with_retry",
 ]

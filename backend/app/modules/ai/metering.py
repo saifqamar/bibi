@@ -112,6 +112,10 @@ class Metered:
         self._record(result.provider, result.model, embedding_tokens=result.tokens)
         return result
 
+    def record_tts(self, result: TTSResult) -> None:
+        """Records a synthesis made outside this wrapper (e.g. in worker threads)."""
+        self._record(result.provider, result.model, tts_characters=result.characters)
+
     def synthesize(self, text: str, voice_id: str, *, language: str = "en") -> TTSResult:
         result = call_with_retry(
             lambda: self.container.tts.synthesize(text, voice_id, language=language),

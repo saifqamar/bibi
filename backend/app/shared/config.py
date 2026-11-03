@@ -52,6 +52,12 @@ class Settings(BaseSettings):
     tts_backend: str = "fake"  # fake (provider [OPEN])
     tracing_backend: str = "logging"  # logging | noop
 
+    # Audio production
+    tts_concurrency: int = 4
+    audio_target_lufs: float = -16.0  # [OPEN] in spec 07; common spoken-word target
+    audio_true_peak: float = -1.5
+    audio_mp3_bitrate: str = "96k"
+
     sentry_dsn: str | None = None
     sentry_traces_sample_rate: float = 0.0
 

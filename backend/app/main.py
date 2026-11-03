@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app import job_modules  # noqa: F401  (registers background jobs)
 from app.container import Container, build_container
 from app.modules.ai.api.routes import routers as ai_routers
+from app.modules.audio.api.routes import routers as audio_routers
 from app.modules.catalog.api.routes import routers as catalog_routers
 from app.modules.identity.api.routes import routers as identity_routers
 from app.modules.writing.api.routes import routers as writing_routers
@@ -42,7 +43,13 @@ def create_app(settings: Settings | None = None, container: Container | None = N
     def health() -> dict[str, str]:
         return {"status": "ok"}
 
-    for router in [*identity_routers, *catalog_routers, *writing_routers, *ai_routers]:
+    for router in [
+        *identity_routers,
+        *catalog_routers,
+        *writing_routers,
+        *ai_routers,
+        *audio_routers,
+    ]:
         api.include_router(router)
 
     app.include_router(api)

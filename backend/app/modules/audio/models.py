@@ -106,9 +106,7 @@ class AudioLine(UUIDPrimaryKey, TimestampMixin, Base):
         Index("ix_audio_lines_text_hash", "text_hash"),
     )
 
-    render_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("audio_renders.id", ondelete="CASCADE")
-    )
+    render_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("audio_renders.id", ondelete="CASCADE"))
     position: Mapped[int] = mapped_column(Integer)
     kind: Mapped[str] = mapped_column(String(20))  # dialogue | narration | scene_break
     source_line: Mapped[int] = mapped_column(Integer)
