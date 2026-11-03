@@ -261,6 +261,36 @@ class EpisodeService:
             return current
         return self._add_version(episode, text, DraftSource.HUMAN, user_id, note)
 
+    def replace_script_line(
+        self, user: CurrentUser, episode_id: uuid.UUID, source_line: int, new_line: str
+    ) -> EpisodeDraft:
+        """Fixes one line during audio production. Saves a new version but keeps the episode in
+        its audio status, so only that line is re-recorded."""
+        episode = self.get_for_user(user, episode_id)
+        if episode.status not in (EpisodeStatus.READY_FOR_AUDIO, EpisodeStatus.AUDIO_READY):
+            raise Conflict("Lines can be fixed during audio production only", code="not_in_audio")
+        current = self._current_draft(episode)
+        lines = current.text.splitlines() if current else []
+        if not 0 <= source_line < len(lines) or "\n" in new_line or not new_line.strip():
+            raise ValidationFailed("That line does not exist", code="invalid_line")
+        lines[source_line] = new_line.strip()
+        draft = EpisodeDraft(
+            episode_id=episode.id,
+            version=self._next_version(episode),
+            text="\n".join(lines),
+            source=DraftSource.HUMAN,
+            created_by=user.id,
+            note=f"Fixed line {source_line + 1} during audio production",
+        )
+        self.db.add(draft)
+        self.db.flush()
+        episode.current_draft_id = draft.id
+        self._audit(user, "episode.line_fix", episode, {"version": draft.version})
+        return draft
+
+    def set_current_audio(self, episode_id: uuid.UUID, audio_asset_id: uuid.UUID) -> None:
+        self._episode(episode_id).current_audio_id = audio_asset_id
+
     def current_text(self, episode_id: uuid.UUID) -> tuple[int | None, str]:
         """``(version, text)`` of the current draft; ``(None, "")`` before the first draft."""
         draft = self._current_draft(self._episode(episode_id))

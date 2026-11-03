@@ -26,6 +26,7 @@ class ScriptLine:
     text: str
     paragraph: int
     unknown_speaker: str | None = None  # "Name:" prefix that matched no character
+    source_line: int = 0  # 0-based line number in the draft text
 
 
 def parse_script(text: str, character_names: list[str]) -> list[ScriptLine]:
@@ -33,7 +34,7 @@ def parse_script(text: str, character_names: list[str]) -> list[ScriptLine]:
     lines: list[ScriptLine] = []
     paragraph = 0
     previous_blank = True
-    for raw in text.splitlines():
+    for line_no, raw in enumerate(text.splitlines()):
         stripped = raw.strip()
         if not stripped:
             if not previous_blank:
@@ -43,7 +44,7 @@ def parse_script(text: str, character_names: list[str]) -> list[ScriptLine]:
         previous_blank = False
         index = len(lines)
         if stripped.lower() == SCENE_BREAK:
-            lines.append(ScriptLine(index, "scene_break", None, "", paragraph))
+            lines.append(ScriptLine(index, "scene_break", None, "", paragraph, source_line=line_no))
             paragraph += 1
             previous_blank = True
             continue
@@ -52,14 +53,24 @@ def parse_script(text: str, character_names: list[str]) -> list[ScriptLine]:
             label, spoken = match.group(1).strip(), match.group(2).strip()
             canonical = names.get(label.lower())
             if canonical:
-                lines.append(ScriptLine(index, "dialogue", canonical, spoken, paragraph))
+                lines.append(
+                    ScriptLine(index, "dialogue", canonical, spoken, paragraph, source_line=line_no)
+                )
                 continue
             if _looks_like_speaker(label):
                 lines.append(
-                    ScriptLine(index, "narration", None, spoken, paragraph, unknown_speaker=label)
+                    ScriptLine(
+                        index,
+                        "narration",
+                        None,
+                        spoken,
+                        paragraph,
+                        unknown_speaker=label,
+                        source_line=line_no,
+                    )
                 )
                 continue
-        lines.append(ScriptLine(index, "narration", None, stripped, paragraph))
+        lines.append(ScriptLine(index, "narration", None, stripped, paragraph, source_line=line_no))
     return lines
 
 

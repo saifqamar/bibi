@@ -175,8 +175,9 @@ class Episode(UUIDPrimaryKey, TimestampMixin, Base):
     current_draft_id: Mapped[uuid.UUID | None] = mapped_column(
         ForeignKey("episode_drafts.id", ondelete="SET NULL", use_alter=True), nullable=True
     )
-    # Audio assets arrive in plan 07; the FK is added there.
-    current_audio_id: Mapped[uuid.UUID | None] = mapped_column(nullable=True)
+    current_audio_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("audio_assets.id", ondelete="SET NULL", use_alter=True), nullable=True
+    )
     # None = follow the series' free episode count; True/False = admin override (plan 09).
     is_free: Mapped[bool | None] = mapped_column(Boolean, nullable=True)
     published_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
