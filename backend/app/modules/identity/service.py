@@ -348,3 +348,9 @@ class IdentityService:
             self.db, actor_id=None, action="admin.seed", entity_type="user", entity_id=user.id
         )
         return user
+
+
+def lookup_user(db: Session, user_id: uuid.UUID) -> UserOut | None:
+    """Public read for other modules (e.g. checking that a new series owner is a writer)."""
+    user = repo.get_user(db, user_id)
+    return UserOut.model_validate(user) if user else None

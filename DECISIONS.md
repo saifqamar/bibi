@@ -31,3 +31,8 @@ See `spec_docs/plans/README.md` and each plan's review table. Additional choices
 | 01 | Invite for an email that already has a listener account | Rejected with `email_in_use`; the admin decides how to proceed. |
 | 01 | Refresh token reuse | Treated as theft: all of that user's sessions are revoked. |
 | 01 | Self-service account deletion | Listeners only; writer and admin accounts are deactivated by an admin instead. |
+| 02 | Archived series | Hidden from shelves and search; still readable by id (`GET /series/{id}`) for listeners who already have it. |
+| 02 | Search scope (MVP) | Case-insensitive title match on published series, ordered by play count. |
+| 02 | Empty shelves | Not returned to listeners (a shelf with no published series is skipped). |
+| 02 | Cover URLs | Signed, valid 24 hours; type checked by file signature (JPEG, PNG, WebP), max 5 MB. |
+| 02 | Unarchive | Returns to `published` if the series was ever published, otherwise `draft`. |

@@ -36,6 +36,192 @@
         "title": "AcceptInviteIn",
         "type": "object"
       },
+      "AdminSeriesUpdate": {
+        "additionalProperties": false,
+        "description": "Admins can also change catalog settings. ``is_ai_assisted`` can only ever be true.",
+        "properties": {
+          "archived": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Archived"
+          },
+          "free_episode_count": {
+            "anyOf": [
+              {
+                "maximum": 1000.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Free Episode Count"
+          },
+          "is_ai_assisted": {
+            "anyOf": [
+              {
+                "const": true,
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Ai Assisted"
+          },
+          "language": {
+            "anyOf": [
+              {
+                "maxLength": 20,
+                "minLength": 2,
+                "pattern": "^[a-z]{2,3}(-[A-Za-z0-9]{2,8})?$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Language"
+          },
+          "owner_writer_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Owner Writer Id"
+          },
+          "premise": {
+            "anyOf": [
+              {
+                "maxLength": 5000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Premise"
+          },
+          "target_episode_minutes": {
+            "anyOf": [
+              {
+                "maximum": 60.0,
+                "minimum": 5.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Episode Minutes"
+          },
+          "themes": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "maxItems": 12,
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Themes"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "tone": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tone"
+          }
+        },
+        "title": "AdminSeriesUpdate",
+        "type": "object"
+      },
+      "AdminShelfOut": {
+        "properties": {
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/ShelfKind"
+          },
+          "position": {
+            "title": "Position",
+            "type": "integer"
+          },
+          "series_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "title": "Series Ids",
+            "type": "array"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "kind",
+          "position",
+          "series_ids"
+        ],
+        "title": "AdminShelfOut",
+        "type": "object"
+      },
+      "Body_admin_upload_cover_api_v1_admin_series__series_id__cover_post": {
+        "properties": {
+          "file": {
+            "contentMediaType": "application/octet-stream",
+            "title": "File",
+            "type": "string"
+          }
+        },
+        "required": [
+          "file"
+        ],
+        "title": "Body_admin_upload_cover_api_v1_admin_series__series_id__cover_post",
+        "type": "object"
+      },
       "CurrentUser": {
         "description": "The signed-in user, as seen by every module's route dependencies.",
         "properties": {
@@ -173,6 +359,121 @@
         "title": "InviteOut",
         "type": "object"
       },
+      "ListenerSeriesOut": {
+        "description": "Listener view of a published series. Always carries the AI-assisted label.",
+        "properties": {
+          "cover_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cover Url"
+          },
+          "free_episode_count": {
+            "title": "Free Episode Count",
+            "type": "integer"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "is_ai_assisted": {
+            "const": true,
+            "default": true,
+            "title": "Is Ai Assisted",
+            "type": "boolean"
+          },
+          "language": {
+            "title": "Language",
+            "type": "string"
+          },
+          "play_count": {
+            "title": "Play Count",
+            "type": "integer"
+          },
+          "premise": {
+            "title": "Premise",
+            "type": "string"
+          },
+          "published_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Published At"
+          },
+          "themes": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Themes",
+            "type": "array"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "tone": {
+            "title": "Tone",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "premise",
+          "language",
+          "tone",
+          "themes",
+          "free_episode_count",
+          "play_count",
+          "cover_url",
+          "published_at"
+        ],
+        "title": "ListenerSeriesOut",
+        "type": "object"
+      },
+      "ListenerShelfOut": {
+        "properties": {
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/ShelfKind"
+          },
+          "series": {
+            "items": {
+              "$ref": "#/components/schemas/ListenerSeriesOut"
+            },
+            "title": "Series",
+            "type": "array"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "kind",
+          "series"
+        ],
+        "title": "ListenerShelfOut",
+        "type": "object"
+      },
       "LoginIn": {
         "properties": {
           "email": {
@@ -222,6 +523,99 @@
           "offset"
         ],
         "title": "Page[InviteOut]",
+        "type": "object"
+      },
+      "Page_ListenerSeriesOut_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ListenerSeriesOut"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "limit": {
+            "title": "Limit",
+            "type": "integer"
+          },
+          "offset": {
+            "title": "Offset",
+            "type": "integer"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "Page[ListenerSeriesOut]",
+        "type": "object"
+      },
+      "Page_ListenerShelfOut_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ListenerShelfOut"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "limit": {
+            "title": "Limit",
+            "type": "integer"
+          },
+          "offset": {
+            "title": "Offset",
+            "type": "integer"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "Page[ListenerShelfOut]",
+        "type": "object"
+      },
+      "Page_SeriesOut_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/SeriesOut"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "limit": {
+            "title": "Limit",
+            "type": "integer"
+          },
+          "offset": {
+            "title": "Offset",
+            "type": "integer"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "Page[SeriesOut]",
         "type": "object"
       },
       "Page_WriterOut_": {
@@ -278,6 +672,225 @@
         ],
         "title": "Role",
         "type": "string"
+      },
+      "SeriesOut": {
+        "description": "Studio view of a series (writers and admins).",
+        "properties": {
+          "cover_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cover Url"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "free_episode_count": {
+            "title": "Free Episode Count",
+            "type": "integer"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "is_ai_assisted": {
+            "title": "Is Ai Assisted",
+            "type": "boolean"
+          },
+          "language": {
+            "title": "Language",
+            "type": "string"
+          },
+          "owner_writer_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Owner Writer Id"
+          },
+          "play_count": {
+            "title": "Play Count",
+            "type": "integer"
+          },
+          "premise": {
+            "title": "Premise",
+            "type": "string"
+          },
+          "published_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Published At"
+          },
+          "status": {
+            "$ref": "#/components/schemas/SeriesStatus"
+          },
+          "target_episode_minutes": {
+            "title": "Target Episode Minutes",
+            "type": "integer"
+          },
+          "themes": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Themes",
+            "type": "array"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "tone": {
+            "title": "Tone",
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "owner_writer_id",
+          "title",
+          "premise",
+          "language",
+          "tone",
+          "themes",
+          "target_episode_minutes",
+          "status",
+          "is_ai_assisted",
+          "free_episode_count",
+          "play_count",
+          "published_at",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "SeriesOut",
+        "type": "object"
+      },
+      "SeriesStatus": {
+        "enum": [
+          "draft",
+          "in_review",
+          "published",
+          "archived"
+        ],
+        "title": "SeriesStatus",
+        "type": "string"
+      },
+      "ShelfCreate": {
+        "properties": {
+          "kind": {
+            "$ref": "#/components/schemas/ShelfKind",
+            "default": "mood"
+          },
+          "title": {
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title"
+        ],
+        "title": "ShelfCreate",
+        "type": "object"
+      },
+      "ShelfItemsIn": {
+        "properties": {
+          "series_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "maxItems": 200,
+            "title": "Series Ids",
+            "type": "array"
+          }
+        },
+        "required": [
+          "series_ids"
+        ],
+        "title": "ShelfItemsIn",
+        "type": "object"
+      },
+      "ShelfKind": {
+        "enum": [
+          "mood",
+          "theme",
+          "genre"
+        ],
+        "title": "ShelfKind",
+        "type": "string"
+      },
+      "ShelfOrderIn": {
+        "properties": {
+          "shelf_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "maxItems": 200,
+            "title": "Shelf Ids",
+            "type": "array"
+          }
+        },
+        "required": [
+          "shelf_ids"
+        ],
+        "title": "ShelfOrderIn",
+        "type": "object"
+      },
+      "ShelfUpdate": {
+        "properties": {
+          "kind": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ShelfKind"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "title": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          }
+        },
+        "title": "ShelfUpdate",
+        "type": "object"
       },
       "SignupIn": {
         "additionalProperties": false,
@@ -750,6 +1363,484 @@
         ]
       }
     },
+    "/api/v1/admin/series": {
+      "get": {
+        "operationId": "admin_list_series_api_v1_admin_series_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/SeriesStatus"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "in": "query",
+            "name": "q",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 100,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Q"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_SeriesOut_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Admin List Series",
+        "tags": [
+          "admin: catalog"
+        ]
+      }
+    },
+    "/api/v1/admin/series/{series_id}": {
+      "put": {
+        "operationId": "admin_update_series_api_v1_admin_series__series_id__put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "series_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Series Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminSeriesUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeriesOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Admin Update Series",
+        "tags": [
+          "admin: catalog"
+        ]
+      }
+    },
+    "/api/v1/admin/series/{series_id}/cover": {
+      "post": {
+        "operationId": "admin_upload_cover_api_v1_admin_series__series_id__cover_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "series_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Series Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_admin_upload_cover_api_v1_admin_series__series_id__cover_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeriesOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Admin Upload Cover",
+        "tags": [
+          "admin: catalog"
+        ]
+      }
+    },
+    "/api/v1/admin/shelves": {
+      "get": {
+        "operationId": "admin_list_shelves_api_v1_admin_shelves_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/AdminShelfOut"
+                  },
+                  "title": "Response Admin List Shelves Api V1 Admin Shelves Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Admin List Shelves",
+        "tags": [
+          "admin: catalog"
+        ]
+      },
+      "post": {
+        "operationId": "admin_create_shelf_api_v1_admin_shelves_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ShelfCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminShelfOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Admin Create Shelf",
+        "tags": [
+          "admin: catalog"
+        ]
+      }
+    },
+    "/api/v1/admin/shelves/order": {
+      "put": {
+        "operationId": "admin_reorder_shelves_api_v1_admin_shelves_order_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ShelfOrderIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Admin Reorder Shelves",
+        "tags": [
+          "admin: catalog"
+        ]
+      }
+    },
+    "/api/v1/admin/shelves/{shelf_id}": {
+      "delete": {
+        "operationId": "admin_delete_shelf_api_v1_admin_shelves__shelf_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "shelf_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Shelf Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Admin Delete Shelf",
+        "tags": [
+          "admin: catalog"
+        ]
+      },
+      "put": {
+        "operationId": "admin_update_shelf_api_v1_admin_shelves__shelf_id__put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "shelf_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Shelf Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ShelfUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminShelfOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Admin Update Shelf",
+        "tags": [
+          "admin: catalog"
+        ]
+      }
+    },
+    "/api/v1/admin/shelves/{shelf_id}/items": {
+      "put": {
+        "operationId": "admin_set_shelf_items_api_v1_admin_shelves__shelf_id__items_put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "shelf_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Shelf Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ShelfItemsIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminShelfOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Admin Set Shelf Items",
+        "tags": [
+          "admin: catalog"
+        ]
+      }
+    },
     "/api/v1/admin/writers": {
       "get": {
         "operationId": "list_writers_api_v1_admin_writers_get",
@@ -1211,6 +2302,199 @@
         "summary": "Me",
         "tags": [
           "account"
+        ]
+      }
+    },
+    "/api/v1/search": {
+      "get": {
+        "operationId": "search_api_v1_search_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "q",
+            "required": true,
+            "schema": {
+              "maxLength": 100,
+              "minLength": 1,
+              "title": "Q",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_ListenerSeriesOut_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Search",
+        "tags": [
+          "catalog"
+        ]
+      }
+    },
+    "/api/v1/series/{series_id}": {
+      "get": {
+        "operationId": "get_series_api_v1_series__series_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "series_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Series Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListenerSeriesOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Series",
+        "tags": [
+          "catalog"
+        ]
+      }
+    },
+    "/api/v1/shelves": {
+      "get": {
+        "operationId": "list_shelves_api_v1_shelves_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "items_per_shelf",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "maximum": 50,
+              "minimum": 1,
+              "title": "Items Per Shelf",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_ListenerShelfOut_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Shelves",
+        "tags": [
+          "catalog"
         ]
       }
     }
