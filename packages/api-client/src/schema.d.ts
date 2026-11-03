@@ -1,5 +1,93 @@
 // Generated from the backend OpenAPI schema. Do not edit; run `pnpm api-client:generate`.
 export interface paths {
+    "/api/v1/admin/analytics/episodes/{episode_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Episode Stats */
+        get: operations["episode_stats_api_v1_admin_analytics_episodes__episode_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/analytics/overview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Overview */
+        get: operations["overview_api_v1_admin_analytics_overview_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/analytics/refresh": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Refresh
+         * @description Queue an aggregation now instead of waiting for the 15-minute schedule.
+         */
+        post: operations["refresh_api_v1_admin_analytics_refresh_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/analytics/retention": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Retention */
+        get: operations["retention_api_v1_admin_analytics_retention_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/analytics/series/{series_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Series Stats */
+        get: operations["series_stats_api_v1_admin_analytics_series__series_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/audit-log": {
         parameters: {
             query?: never;
@@ -583,6 +671,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Post Events */
+        post: operations["post_events_api_v1_events_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/health": {
         parameters: {
             query?: never;
@@ -613,6 +718,75 @@ export interface paths {
         post?: never;
         /** Delete Me */
         delete: operations["delete_me_api_v1_me_delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/downloads": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Downloads */
+        get: operations["get_downloads_api_v1_me_downloads_get"];
+        put?: never;
+        /** Add Download */
+        post: operations["add_download_api_v1_me_downloads_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/downloads/{episode_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Remove Download */
+        delete: operations["remove_download_api_v1_me_downloads__episode_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/progress": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Progress */
+        get: operations["get_progress_api_v1_me_progress_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/progress/{episode_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Put Progress */
+        put: operations["put_progress_api_v1_me_progress__episode_id__put"];
+        post?: never;
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -2000,6 +2174,29 @@ export interface components {
              */
             op: "equal" | "insert" | "delete" | "replace";
         };
+        /** DownloadIn */
+        DownloadIn: {
+            /**
+             * Episode Id
+             * Format: uuid
+             */
+            episode_id: string;
+        };
+        /** DownloadOut */
+        DownloadOut: {
+            /** Available */
+            available: boolean;
+            /**
+             * Downloaded At
+             * Format: date-time
+             */
+            downloaded_at: string;
+            /**
+             * Episode Id
+             * Format: uuid
+             */
+            episode_id: string;
+        };
         /** DraftIn */
         DraftIn: {
             /**
@@ -2164,6 +2361,53 @@ export interface components {
         EpisodeUpdate: {
             /** Title */
             title?: string | null;
+        };
+        /** EventBatchIn */
+        EventBatchIn: {
+            /** Events */
+            events: components["schemas"]["EventIn"][];
+        };
+        /** EventBatchOut */
+        EventBatchOut: {
+            /** Accepted */
+            accepted: number;
+            /** Duplicates */
+            duplicates: number;
+            /** Rejected */
+            rejected: components["schemas"]["RejectedEvent"][];
+        };
+        /** EventIn */
+        EventIn: {
+            /** Client Event Id */
+            client_event_id: string;
+            /**
+             * Client Ts
+             * Format: date-time
+             */
+            client_ts: string;
+            /** Device */
+            device?: {
+                [key: string]: unknown;
+            };
+            /**
+             * Episode Id
+             * Format: uuid
+             */
+            episode_id: string;
+            /**
+             * Position Seconds
+             * @default 0
+             */
+            position_seconds: number | string;
+            /**
+             * Session Id
+             * @default
+             */
+            session_id: string;
+            /** To Episode Id */
+            to_episode_id?: string | null;
+            /** Type */
+            type: string;
         };
         /** HTTPValidationError */
         HTTPValidationError: {
@@ -2592,6 +2836,51 @@ export interface components {
             /** Title */
             title?: string | null;
         };
+        /** ProgressIn */
+        ProgressIn: {
+            /**
+             * Client Ts
+             * Format: date-time
+             */
+            client_ts: string;
+            /**
+             * Completed
+             * @default false
+             */
+            completed: boolean;
+            /** Position Seconds */
+            position_seconds: number | string;
+        };
+        /** ProgressOut */
+        ProgressOut: {
+            /** Completed */
+            completed: boolean;
+            /** Duration Seconds */
+            duration_seconds: string | null;
+            /**
+             * Episode Id
+             * Format: uuid
+             */
+            episode_id: string;
+            /** Episode Number */
+            episode_number: number;
+            /** Episode Title */
+            episode_title: string;
+            /** Position Seconds */
+            position_seconds: string;
+            /**
+             * Series Id
+             * Format: uuid
+             */
+            series_id: string;
+            /** Series Title */
+            series_title: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+        };
         /**
          * ProposalAcceptIn
          * @description Optionally accept with edits: the writer can adjust the payload first.
@@ -2668,6 +2957,13 @@ export interface components {
         RegenerateIn: {
             /** Sections */
             sections: components["schemas"]["Section"][];
+        };
+        /** RejectedEvent */
+        RejectedEvent: {
+            /** Code */
+            code: string;
+            /** Index */
+            index: number;
         };
         /** RelationshipCreate */
         RelationshipCreate: {
@@ -3325,6 +3621,156 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    episode_stats_api_v1_admin_analytics_episodes__episode_id__get: {
+        parameters: {
+            query?: {
+                from?: string | null;
+                to?: string | null;
+            };
+            header?: never;
+            path: {
+                episode_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    overview_api_v1_admin_analytics_overview_get: {
+        parameters: {
+            query?: {
+                from?: string | null;
+                to?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    refresh_api_v1_admin_analytics_refresh_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: string;
+                    };
+                };
+            };
+        };
+    };
+    retention_api_v1_admin_analytics_retention_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: number | null;
+                    };
+                };
+            };
+        };
+    };
+    series_stats_api_v1_admin_analytics_series__series_id__get: {
+        parameters: {
+            query?: {
+                from?: string | null;
+                to?: string | null;
+            };
+            header?: never;
+            path: {
+                series_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     audit_log_api_v1_admin_audit_log_get: {
         parameters: {
             query?: {
@@ -4570,6 +5016,39 @@ export interface operations {
             };
         };
     };
+    post_events_api_v1_events_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EventBatchIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EventBatchOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     health_api_v1_health_get: {
         parameters: {
             query?: never;
@@ -4627,6 +5106,154 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    get_downloads_api_v1_me_downloads_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DownloadOut"][];
+                };
+            };
+        };
+    };
+    add_download_api_v1_me_downloads_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DownloadIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DownloadOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    remove_download_api_v1_me_downloads__episode_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                episode_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_progress_api_v1_me_progress_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProgressOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    put_progress_api_v1_me_progress__episode_id__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                episode_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProgressIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProgressOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
             };
         };
     };
