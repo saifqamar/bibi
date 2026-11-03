@@ -8,6 +8,7 @@ from app.modules.writing.models import DraftSource, EpisodeStatus, ProposalOp
 from app.modules.writing.schemas import EpisodeOut, ProposalIn, ScriptLineOut
 from app.modules.writing.script import parse_script
 from app.modules.writing.service import BibleService, register_reference_checker
+from app.modules.writing.summaries import SummaryHit, SummaryService
 
 __all__ = [
     "BibleService",
@@ -18,6 +19,8 @@ __all__ = [
     "ProposalIn",
     "ProposalOp",
     "ScriptLineOut",
+    "SummaryHit",
+    "SummaryService",
     "parse_script",
     "register_reference_checker",
     "register_status_guard",
