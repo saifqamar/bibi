@@ -2631,6 +2631,63 @@
         "title": "PlanOut",
         "type": "object"
       },
+      "PlaybackOut": {
+        "properties": {
+          "duration_seconds": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duration Seconds"
+          },
+          "episode_id": {
+            "format": "uuid",
+            "title": "Episode Id",
+            "type": "string"
+          },
+          "format": {
+            "title": "Format",
+            "type": "string"
+          },
+          "next_episode_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Next live episode, for auto-advance",
+            "title": "Next Episode Id"
+          },
+          "series_id": {
+            "format": "uuid",
+            "title": "Series Id",
+            "type": "string"
+          },
+          "url": {
+            "description": "Signed, expiring URL of the published audio",
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "episode_id",
+          "series_id",
+          "url",
+          "format",
+          "duration_seconds",
+          "next_episode_id"
+        ],
+        "title": "PlaybackOut",
+        "type": "object"
+      },
       "PlotThreadCreate": {
         "additionalProperties": false,
         "properties": {
@@ -7289,6 +7346,54 @@
         "summary": "Get Episode",
         "tags": [
           "catalog"
+        ]
+      }
+    },
+    "/api/v1/episodes/{episode_id}/playback": {
+      "get": {
+        "operationId": "get_playback_api_v1_episodes__episode_id__playback_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "episode_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Episode Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlaybackOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Playback",
+        "tags": [
+          "listening"
         ]
       }
     },

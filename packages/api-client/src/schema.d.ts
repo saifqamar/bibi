@@ -671,6 +671,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/episodes/{episode_id}/playback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Playback */
+        get: operations["get_playback_api_v1_episodes__episode_id__playback_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/events": {
         parameters: {
             query?: never;
@@ -2770,6 +2787,33 @@ export interface components {
             beats: components["schemas"]["Beat"][];
             /** Notes */
             notes: string;
+        };
+        /** PlaybackOut */
+        PlaybackOut: {
+            /** Duration Seconds */
+            duration_seconds: string | null;
+            /**
+             * Episode Id
+             * Format: uuid
+             */
+            episode_id: string;
+            /** Format */
+            format: string;
+            /**
+             * Next Episode Id
+             * @description Next live episode, for auto-advance
+             */
+            next_episode_id: string | null;
+            /**
+             * Series Id
+             * Format: uuid
+             */
+            series_id: string;
+            /**
+             * Url
+             * @description Signed, expiring URL of the published audio
+             */
+            url: string;
         };
         /** PlotThreadCreate */
         PlotThreadCreate: {
@@ -5003,6 +5047,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ListenerEpisodeOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_playback_api_v1_episodes__episode_id__playback_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                episode_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlaybackOut"];
                 };
             };
             /** @description Validation Error */

@@ -9,6 +9,7 @@ from app.modules.audio.schemas import (
     AssignmentsOut,
     EpisodeAudioOut,
     LineTextIn,
+    PlaybackOut,
     StartRenderOut,
     VoiceIn,
     VoiceOut,
@@ -16,12 +17,13 @@ from app.modules.audio.schemas import (
     VoiceUpdate,
 )
 from app.modules.audio.service import AudioService, CastingService, VoiceService
-from app.modules.identity import CurrentUser, require_admin, require_studio
+from app.modules.identity import CurrentUser, require_admin, require_listener, require_studio
 from app.shared.db import get_db
 from app.shared.ratelimit import rate_limit
 
 studio_router = APIRouter(prefix="/studio", tags=["studio: voices and audio"])
 admin_router = APIRouter(prefix="/admin", tags=["admin: voices"])
+listener_router = APIRouter(tags=["listening"])
 _audio_limit = rate_limit("audio", limit=30, window_seconds=60)
 
 
@@ -178,4 +180,13 @@ def admin_update_voice(
     return VoiceOut.model_validate(voices.update(admin, voice_id, body))
 
 
-routers = [studio_router, admin_router]
+@listener_router.get("/episodes/{episode_id}/playback", response_model=PlaybackOut)
+def get_playback(
+    episode_id: uuid.UUID,
+    _: CurrentUser = Depends(require_listener),
+    service: AudioService = Depends(get_audio_service),
+) -> PlaybackOut:
+    return service.playback(episode_id)
+
+
+routers = [studio_router, admin_router, listener_router]

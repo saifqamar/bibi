@@ -36,11 +36,12 @@ from app.modules.audio.schemas import (
     AudioLineOut,
     CastMember,
     EpisodeAudioOut,
+    PlaybackOut,
     RenderOut,
     VoiceIn,
     VoiceUpdate,
 )
-from app.modules.catalog import CatalogService
+from app.modules.catalog import CatalogService, SeriesStatus
 from app.modules.identity import CurrentUser
 from app.modules.writing import (
     BibleService,
@@ -573,6 +574,30 @@ class AudioService:
         episode = self.episodes.get(episode_id)
         return (
             self.db.get(AudioAsset, episode.current_audio_id) if episode.current_audio_id else None
+        )
+
+    def playback(self, episode_id: uuid.UUID) -> PlaybackOut:
+        """The published audio of a live episode, for listeners; 404 for anything not live."""
+        try:
+            episode = self.episodes.get(episode_id)
+        except NotFound:
+            raise NotFound("Episode not found") from None
+        series = CatalogService(self.db, self.container).get_series(episode.series_id)
+        asset = (
+            self.db.get(AudioAsset, episode.published_audio_id)
+            if episode.published_audio_id and episode.published_at
+            else None
+        )
+        if asset is None or series.status not in (SeriesStatus.PUBLISHED, SeriesStatus.ARCHIVED):
+            raise NotFound("Episode not found")
+        later = [e for e in self.episodes.live_episodes(series.id) if e.number > episode.number]
+        return PlaybackOut(
+            episode_id=episode.id,
+            series_id=series.id,
+            url=self.container.storage.signed_url(asset.storage_key),
+            format=asset.format,
+            duration_seconds=episode.published_duration_seconds or asset.duration_seconds,
+            next_episode_id=later[0].id if later else None,
         )
 
     def episode_audio(self, user: CurrentUser, episode_id: uuid.UUID) -> EpisodeAudioOut:

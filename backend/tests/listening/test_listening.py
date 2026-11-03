@@ -63,6 +63,34 @@ def published(client: TestClient, make: Callable[..., TestUser], db: Session) ->
     return {"series": series["id"], "episodes": ids}
 
 
+def test_playback_returns_a_signed_url_and_the_next_episode(
+    client: TestClient, make: Callable[..., TestUser], published: dict[str, Any], db: Session
+) -> None:
+    listener = make(Role.LISTENER)
+    one, two, unpublished = published["episodes"]
+    first = client.get(f"{API}/episodes/{one}/playback", headers=listener.headers)
+    assert first.status_code == 200, first.text
+    body = first.json()
+    assert body["series_id"] == published["series"]
+    assert body["next_episode_id"] == two
+    assert body["format"] == "mp3"
+    assert float(body["duration_seconds"]) == 600
+    assert f"a/{one}.mp3" in body["url"] and "sig=" in body["url"]
+
+    last = client.get(f"{API}/episodes/{two}/playback", headers=listener.headers).json()
+    assert last["next_episode_id"] is None  # episode three is not live
+    for missing in (unpublished, str(uuid.uuid4())):
+        response = client.get(f"{API}/episodes/{missing}/playback", headers=listener.headers)
+        assert response.status_code == 404
+    assert client.get(f"{API}/episodes/{one}/playback").status_code == 401
+
+    series = db.get(Series, uuid.UUID(published["series"]))
+    assert series
+    series.status = SeriesStatus.DRAFT
+    db.commit()
+    assert client.get(f"{API}/episodes/{one}/playback", headers=listener.headers).status_code == 404
+
+
 def event(
     episode_id: str, type_: str, position: float = 0, at: datetime = DAY0, **extra: Any
 ) -> dict[str, Any]:
