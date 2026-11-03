@@ -16,6 +16,7 @@ Records every deviation from `BIBI_SPEC.md` / `spec_docs/`, every `[CHECK]` item
 | D3 | Object storage + CDN | `LocalStorage` with HMAC-signed URLs for now | Hosting not chosen; S3/CDN adapter plugs into the same port. |
 | D4 | Async stack not specified | Sync SQLAlchemy 2 + psycopg 3 in the API (FastAPI threadpool) | Simpler code and tests; workers run sync services in threads. |
 | D5 | LLM tracing "for example Langfuse" | `TracerPort` with a structured-log tracer | Tracing vendor not chosen; a Langfuse/OpenTelemetry adapter plugs into the same port. |
+| D7 | One `thread_id` per episode per workflow, e.g. `episode-123:drafting` | `episode-{id}:{workflow}:{run}`: still one thread per episode and workflow, plus the run | A new drafting run must start from a fresh state; a paused run resumes from its own checkpoint. |
 | D6 | Embeddings via `EmbeddingPort` | Deterministic fake embeddings (1536 dimensions) | Anthropic has no embeddings API and the embedding provider is not chosen. |
 
 ## [CHECK] items verified
@@ -51,3 +52,8 @@ See `spec_docs/plans/README.md` and each plan's review table. Additional choices
 | 14 | Cached input tokens | Billed at the full input price in our cost rows (slight over-estimate) until cache pricing is modelled. |
 | 14 | Budgets | Soft per-series limit set by admins; Studio shows a warning, nothing is blocked. |
 | 14 | Run progress stream | Server-sent events; the stream closes when a run waits for the writer or finishes, and resumes from `Last-Event-ID`. |
+| 05 | Draftable statuses | `planned`, `drafting` and `changes_requested`; at least one beat is required. |
+| 05 | "Edit" at draft review | Saves the writer's text as a new version and counts as approval. |
+| 05 | Rewriting a selection | Applies to the saved text only; during a run it goes through the review step, otherwise a one-step `section_regen` run. |
+| 05 | Retrieval for drafting | The two previous episodes plus the three most similar earlier summaries (pgvector cosine). |
+| 05 | Malformed AI canon suggestions | Dropped and logged; they never fail the run. |
