@@ -4,6 +4,8 @@ import { QueryState } from "@/components/QueryState";
 import { StatusBadge } from "@/components/StatusBadge";
 import { TabNav } from "@/components/TabNav";
 import { BibleTab } from "@/writer/bible/BibleTab";
+import { EpisodePage } from "@/writer/episodes/EpisodePage";
+import { EpisodesTab } from "@/writer/episodes/EpisodesTab";
 import { ProposalsTab, usePendingProposals } from "@/writer/bible/ProposalsTab";
 import { OverviewTab } from "./OverviewTab";
 import { useSeries } from "./queries";
@@ -30,6 +32,7 @@ export function SeriesWorkspace() {
             label="Series sections"
             items={[
               { to: base, label: "Overview", end: true },
+              { to: `${base}/episodes`, label: "Episodes" },
               { to: `${base}/bible`, label: "Story bible" },
               { to: `${base}/proposals`, label: "Canon proposals", badge: pending.data?.length },
             ]}
@@ -37,6 +40,8 @@ export function SeriesWorkspace() {
           <div className="pt-6">
             <Routes>
               <Route index element={<OverviewTab series={series} />} />
+              <Route path="episodes" element={<EpisodesTab seriesId={series.id} />} />
+              <Route path="episodes/:episodeId/*" element={<EpisodePage seriesId={series.id} />} />
               <Route path="bible/*" element={<BibleTab seriesId={series.id} />} />
               <Route path="proposals" element={<ProposalsTab seriesId={series.id} />} />
             </Routes>
