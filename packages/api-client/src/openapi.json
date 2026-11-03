@@ -1221,6 +1221,157 @@
         "title": "InviteOut",
         "type": "object"
       },
+      "IssueCanonIn": {
+        "description": "Turn an issue into a canon change proposal the writer then accepts or rejects.",
+        "properties": {
+          "entity_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Entity Id"
+          },
+          "entity_type": {
+            "enum": [
+              "characters",
+              "relationships",
+              "locations",
+              "world-rules",
+              "timeline",
+              "plot-threads"
+            ],
+            "title": "Entity Type",
+            "type": "string"
+          },
+          "op": {
+            "enum": [
+              "create",
+              "update",
+              "delete"
+            ],
+            "title": "Op",
+            "type": "string"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "title": "Payload",
+            "type": "object"
+          }
+        },
+        "required": [
+          "entity_type",
+          "op"
+        ],
+        "title": "IssueCanonIn",
+        "type": "object"
+      },
+      "IssueOut": {
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "draft_version": {
+            "title": "Draft Version",
+            "type": "integer"
+          },
+          "episode_id": {
+            "format": "uuid",
+            "title": "Episode Id",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "quote": {
+            "title": "Quote",
+            "type": "string"
+          },
+          "resolution_note": {
+            "title": "Resolution Note",
+            "type": "string"
+          },
+          "resolved_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Resolved At"
+          },
+          "severity": {
+            "title": "Severity",
+            "type": "string"
+          },
+          "source_ref": {
+            "additionalProperties": true,
+            "title": "Source Ref",
+            "type": "object"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "type": {
+            "title": "Type",
+            "type": "string"
+          },
+          "workflow_run_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Workflow Run Id"
+          }
+        },
+        "required": [
+          "id",
+          "episode_id",
+          "workflow_run_id",
+          "draft_version",
+          "severity",
+          "type",
+          "description",
+          "quote",
+          "source_ref",
+          "status",
+          "resolution_note",
+          "resolved_at",
+          "created_at"
+        ],
+        "title": "IssueOut",
+        "type": "object"
+      },
+      "IssueStatus": {
+        "enum": [
+          "open",
+          "fixed",
+          "intentional"
+        ],
+        "title": "IssueStatus",
+        "type": "string"
+      },
       "ListenerSeriesOut": {
         "description": "Listener view of a published series. Always carries the AI-assisted label.",
         "properties": {
@@ -2204,6 +2355,29 @@
           }
         },
         "title": "RelationshipUpdate",
+        "type": "object"
+      },
+      "ResolveIssueIn": {
+        "properties": {
+          "note": {
+            "default": "",
+            "maxLength": 2000,
+            "title": "Note",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "fixed",
+              "intentional"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ],
+        "title": "ResolveIssueIn",
         "type": "object"
       },
       "ResumeIn": {
@@ -4994,6 +5168,127 @@
         ]
       }
     },
+    "/api/v1/studio/continuity-issues/{issue_id}/propose-canon": {
+      "post": {
+        "description": "Creates a pending canon proposal; the issue stays open until the next check.",
+        "operationId": "propose_canon_from_issue_api_v1_studio_continuity_issues__issue_id__propose_canon_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "issue_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Issue Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IssueCanonIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "title": "Response Propose Canon From Issue Api V1 Studio Continuity Issues  Issue Id  Propose Canon Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Propose Canon From Issue",
+        "tags": [
+          "studio: ai runs and costs"
+        ]
+      }
+    },
+    "/api/v1/studio/continuity-issues/{issue_id}/resolve": {
+      "post": {
+        "operationId": "resolve_issue_api_v1_studio_continuity_issues__issue_id__resolve_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "issue_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Issue Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResolveIssueIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IssueOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Resolve Issue",
+        "tags": [
+          "studio: ai runs and costs"
+        ]
+      }
+    },
     "/api/v1/studio/episodes/{episode_id}": {
       "delete": {
         "operationId": "delete_episode_api_v1_studio_episodes__episode_id__delete",
@@ -5134,6 +5429,74 @@
         "summary": "Update Episode",
         "tags": [
           "studio: episodes"
+        ]
+      }
+    },
+    "/api/v1/studio/episodes/{episode_id}/continuity-issues": {
+      "get": {
+        "operationId": "list_issues_api_v1_studio_episodes__episode_id__continuity_issues_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "episode_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Episode Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/IssueStatus"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/IssueOut"
+                  },
+                  "title": "Response List Issues Api V1 Studio Episodes  Episode Id  Continuity Issues Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Issues",
+        "tags": [
+          "studio: ai runs and costs"
         ]
       }
     },
@@ -5748,6 +6111,54 @@
           }
         ],
         "summary": "List Runs",
+        "tags": [
+          "studio: ai runs and costs"
+        ]
+      }
+    },
+    "/api/v1/studio/episodes/{episode_id}/workflows/continuity": {
+      "post": {
+        "operationId": "start_continuity_api_v1_studio_episodes__episode_id__workflows_continuity_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "episode_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Episode Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Start Continuity",
         "tags": [
           "studio: ai runs and costs"
         ]
