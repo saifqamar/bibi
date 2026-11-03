@@ -1,0 +1,27 @@
+{
+  "name": "@bibi/query-hooks",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.tsx",
+  "types": "src/index.tsx",
+  "exports": {
+    ".": "./src/index.tsx"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@bibi/api-client": "workspace:*"
+  },
+  "peerDependencies": {
+    "@tanstack/react-query": "^5.105.3",
+    "react": "^19.0.0"
+  },
+  "devDependencies": {
+    "@tanstack/react-query": "5.105.3",
+    "@types/react": "19.3.0",
+    "react": "19.3.1",
+    "typescript": "5.9.3"
+  }
+}
