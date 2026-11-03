@@ -1,6 +1,7 @@
 import { NavLink, Outlet, useNavigate } from "react-router";
 import { api } from "@/api";
 import { useAuth } from "@/auth/store";
+import { NotificationsBell } from "@/components/NotificationsBell";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -10,7 +11,7 @@ interface NavItem {
 }
 
 const writerNav: NavItem[] = [{ to: "/writer", label: "My series" }];
-const adminNav: NavItem[] = [{ to: "/admin", label: "Admin home" }];
+const adminNav: NavItem[] = [{ to: "/admin", label: "Review queue" }];
 
 function NavSection({ title, items }: { title: string; items: NavItem[] }) {
   return (
@@ -46,6 +47,7 @@ export function AppLayout() {
           {user?.role === "admin" && <NavSection title="Admin" items={adminNav} />}
         </nav>
         <div className="mt-auto flex flex-col gap-2 px-3 text-sm">
+          <NotificationsBell />
           <span className="truncate text-muted-foreground">{user?.email}</span>
           <Button
             variant="outline"

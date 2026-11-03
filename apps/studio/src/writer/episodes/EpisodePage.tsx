@@ -9,6 +9,7 @@ import { DraftingPanel } from "./DraftingPanel";
 import { EditorTab } from "./EditorTab";
 import { HistoryTab } from "./HistoryTab";
 import { PlanTab } from "./PlanTab";
+import { ReviewTab } from "./ReviewTab";
 import { useEpisode } from "./queries";
 
 export function EpisodePage({ seriesId }: { seriesId: string }) {
@@ -37,6 +38,7 @@ export function EpisodePage({ seriesId }: { seriesId: string }) {
               { to: `${base}/history`, label: "History" },
               { to: `${base}/continuity`, label: "Continuity" },
               { to: `${base}/audio`, label: "Audio" },
+              { to: `${base}/review`, label: "Review" },
               { to: `${base}/ai`, label: "AI & cost" },
             ]}
           />
@@ -46,6 +48,7 @@ export function EpisodePage({ seriesId }: { seriesId: string }) {
             <Route path="history" element={<HistoryTab episode={episode} />} />
             <Route path="continuity" element={<ContinuityTab episode={episode} />} />
             <Route path="audio" element={<AudioTab episode={episode} />} />
+            <Route path="review" element={<ReviewTab episode={episode} />} />
             <Route path="ai" element={<AiTab episode={episode} />} />
           </Routes>
         </div>
