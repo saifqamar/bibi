@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app import job_modules  # noqa: F401  (registers background jobs)
 from app.container import Container, build_container
+from app.modules.identity.api.routes import routers as identity_routers
 from app.shared import media
 from app.shared.config import Settings, get_settings
 from app.shared.errors import install_error_handlers
@@ -35,6 +36,9 @@ def create_app(settings: Settings | None = None, container: Container | None = N
     @api.get("/health", tags=["system"])
     def health() -> dict[str, str]:
         return {"status": "ok"}
+
+    for router in identity_routers:
+        api.include_router(router)
 
     app.include_router(api)
     app.include_router(media.router)

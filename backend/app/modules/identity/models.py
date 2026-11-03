@@ -32,7 +32,9 @@ def _enum(enum_cls: type[StrEnum], name: str) -> Enum:
 
 class User(UUIDPrimaryKey, TimestampMixin, Base):
     __tablename__ = "users"
-    __table_args__ = (UniqueConstraint("provider", "provider_id", name="uq_users_provider_identity"),)
+    __table_args__ = (
+        UniqueConstraint("provider", "provider_id", name="uq_users_provider_identity"),
+    )
 
     email: Mapped[str] = mapped_column(String(320), unique=True)
     password_hash: Mapped[str | None] = mapped_column(String(255), nullable=True)

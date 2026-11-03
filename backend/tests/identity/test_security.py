@@ -13,6 +13,8 @@ from app.modules.identity.security import (
 )
 from app.shared.errors import Unauthorized
 
+SECRET = "unit-test-secret-that-is-long-enough-0123"
+
 
 def test_password_hashing() -> None:
     hashed = hash_password("correct horse")
@@ -25,23 +27,27 @@ def test_password_hashing() -> None:
 
 def test_access_token_round_trip() -> None:
     user_id = uuid.uuid4()
-    token = create_access_token(user_id, "writer", secret="s", ttl_minutes=5)
-    claims = decode_access_token(token, secret="s")
+    token = create_access_token(user_id, "writer", secret=SECRET, ttl_minutes=5)
+    claims = decode_access_token(token, secret=SECRET)
     assert claims.user_id == user_id
     assert claims.role == "writer"
 
 
 def test_access_token_rejections() -> None:
-    token = create_access_token(uuid.uuid4(), "writer", secret="s", ttl_minutes=5)
+    token = create_access_token(uuid.uuid4(), "writer", secret=SECRET, ttl_minutes=5)
     with pytest.raises(Unauthorized) as wrong_secret:
-        decode_access_token(token, secret="other")
+        decode_access_token(token, secret=SECRET + "-other")
     assert wrong_secret.value.code == "invalid_token"
 
     old = create_access_token(
-        uuid.uuid4(), "writer", secret="s", ttl_minutes=5, now=datetime.now(UTC) - timedelta(hours=1)
+        uuid.uuid4(),
+        "writer",
+        secret=SECRET,
+        ttl_minutes=5,
+        now=datetime.now(UTC) - timedelta(hours=1),
     )
     with pytest.raises(Unauthorized) as expired:
-        decode_access_token(old, secret="s")
+        decode_access_token(old, secret=SECRET)
     assert expired.value.code == "token_expired"
 
 
