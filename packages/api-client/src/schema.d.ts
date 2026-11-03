@@ -208,6 +208,41 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/voices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Admin List Voices */
+        get: operations["admin_list_voices_api_v1_admin_voices_get"];
+        put?: never;
+        /** Admin Create Voice */
+        post: operations["admin_create_voice_api_v1_admin_voices_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/voices/{voice_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Admin Update Voice */
+        put: operations["admin_update_voice_api_v1_admin_voices__voice_id__put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/writers": {
         parameters: {
             query?: never;
@@ -447,6 +482,57 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/studio/audio-lines/{line_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Edit Line */
+        put: operations["edit_line_api_v1_studio_audio_lines__line_id__put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/studio/audio-lines/{line_id}/regenerate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Regenerate Line */
+        post: operations["regenerate_line_api_v1_studio_audio_lines__line_id__regenerate_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/studio/audio-renders/{render_id}/retry": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Retry Render */
+        post: operations["retry_render_api_v1_studio_audio_renders__render_id__retry_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/studio/canon-proposals/{proposal_id}/accept": {
         parameters: {
             query?: never;
@@ -532,6 +618,24 @@ export interface paths {
         post?: never;
         /** Delete Episode */
         delete: operations["delete_episode_api_v1_studio_episodes__episode_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/studio/episodes/{episode_id}/audio": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Episode Audio */
+        get: operations["episode_audio_api_v1_studio_episodes__episode_id__audio_get"];
+        put?: never;
+        /** Start Render */
+        post: operations["start_render_api_v1_studio_episodes__episode_id__audio_post"];
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -1083,6 +1187,24 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/studio/series/{series_id}/voice-assignments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Cast */
+        get: operations["get_cast_api_v1_studio_series__series_id__voice_assignments_get"];
+        /** Set Cast */
+        put: operations["set_cast_api_v1_studio_series__series_id__voice_assignments_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/studio/series/{series_id}/world-rules": {
         parameters: {
             query?: never;
@@ -1115,6 +1237,40 @@ export interface paths {
         post?: never;
         /** Delete World Rules */
         delete: operations["delete_world_rules_api_v1_studio_series__series_id__world_rules__entity_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/studio/voices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Voices */
+        get: operations["list_voices_api_v1_studio_voices_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/studio/voices/{voice_id}/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Voice Preview */
+        get: operations["voice_preview_api_v1_studio_voices__voice_id__preview_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -1261,6 +1417,82 @@ export interface components {
             /** Title */
             title: string;
         };
+        /** AssignmentIn */
+        AssignmentIn: {
+            /**
+             * Character Id
+             * @description null assigns the narrator voice
+             */
+            character_id: string | null;
+            /**
+             * Voice Id
+             * Format: uuid
+             */
+            voice_id: string;
+        };
+        /** AssignmentsIn */
+        AssignmentsIn: {
+            /** Assignments */
+            assignments: components["schemas"]["AssignmentIn"][];
+        };
+        /** AssignmentsOut */
+        AssignmentsOut: {
+            /** Cast */
+            cast: components["schemas"]["CastMember"][];
+        };
+        /** AudioAssetOut */
+        AudioAssetOut: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Duration Seconds */
+            duration_seconds: string;
+            /** Format */
+            format: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Loudness Lufs */
+            loudness_lufs: string | null;
+            /** Peak Dbfs */
+            peak_dbfs: string | null;
+            /** Url */
+            url: string;
+        };
+        /** AudioLineOut */
+        AudioLineOut: {
+            /** Duration Ms */
+            duration_ms: number;
+            /** Error */
+            error: string | null;
+            /** Flag */
+            flag: string | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Kind */
+            kind: string;
+            /** Position */
+            position: number;
+            /** Source Line */
+            source_line: number;
+            /** Speaker */
+            speaker: string | null;
+            /** Status */
+            status: string;
+            /** Text */
+            text: string;
+            /** Url */
+            url: string | null;
+            /** Voice Id */
+            voice_id: string | null;
+        };
         /** Beat */
         Beat: {
             /** Id */
@@ -1304,6 +1536,17 @@ export interface components {
             over_budget: boolean;
             /** Soft Limit Usd */
             soft_limit_usd: string | null;
+        };
+        /** CastMember */
+        CastMember: {
+            /** Character Id */
+            character_id: string | null;
+            /** Name */
+            name: string;
+            /** Voice Id */
+            voice_id: string | null;
+            /** Voice Notes */
+            voice_notes: string;
         };
         /** CharacterCreate */
         CharacterCreate: {
@@ -1502,6 +1745,15 @@ export interface components {
             /** Word Count */
             word_count: number;
         };
+        /** EpisodeAudioOut */
+        EpisodeAudioOut: {
+            asset: components["schemas"]["AudioAssetOut"] | null;
+            /** Is Current */
+            is_current: boolean;
+            /** Lines */
+            lines: components["schemas"]["AudioLineOut"][];
+            render: components["schemas"]["RenderOut"] | null;
+        };
         /** EpisodeCost */
         EpisodeCost: {
             /** Cost Usd */
@@ -1688,6 +1940,11 @@ export interface components {
          * @enum {string}
          */
         IssueStatus: "open" | "fixed" | "intentional";
+        /** LineTextIn */
+        LineTextIn: {
+            /** Text */
+            text: string;
+        };
         /**
          * ListenerSeriesOut
          * @description Listener view of a published series. Always carries the AI-assisted label.
@@ -2072,6 +2329,31 @@ export interface components {
             /** From Episode */
             from_episode?: number | null;
         };
+        /** RenderOut */
+        RenderOut: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Draft Version */
+            draft_version: number;
+            /** Error */
+            error: string | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Lines Done */
+            lines_done: number;
+            /** Lines Total */
+            lines_total: number;
+            /** Status */
+            status: string;
+            /** Workflow Run Id */
+            workflow_run_id: string | null;
+        };
         /** ResolveIssueIn */
         ResolveIssueIn: {
             /**
@@ -2156,6 +2438,8 @@ export interface components {
             kind: "dialogue" | "narration" | "scene_break";
             /** Paragraph */
             paragraph: number;
+            /** Source Line */
+            source_line: number;
             /** Speaker */
             speaker: string | null;
             /** Text */
@@ -2322,6 +2606,19 @@ export interface components {
             /** Provider */
             provider: string;
         };
+        /** StartRenderOut */
+        StartRenderOut: {
+            /**
+             * Render Id
+             * Format: uuid
+             */
+            render_id: string;
+            /**
+             * Workflow Run Id
+             * Format: uuid
+             */
+            workflow_run_id: string;
+        };
         /** StatusIn */
         StatusIn: {
             status: components["schemas"]["EpisodeStatus"];
@@ -2433,6 +2730,70 @@ export interface components {
             msg: string;
             /** Error Type */
             type: string;
+        };
+        /** VoiceIn */
+        VoiceIn: {
+            /**
+             * Description
+             * @default
+             */
+            description: string;
+            /**
+             * Language
+             * @default en
+             */
+            language: string;
+            /** Name */
+            name: string;
+            /** Provider */
+            provider: string;
+            /** Provider Voice Id */
+            provider_voice_id: string;
+            /** Sample Text */
+            sample_text?: string | null;
+        };
+        /** VoiceOut */
+        VoiceOut: {
+            /** Description */
+            description: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Is Active */
+            is_active: boolean;
+            /** Language */
+            language: string;
+            /** Name */
+            name: string;
+            /** Provider */
+            provider: string;
+            /** Provider Voice Id */
+            provider_voice_id: string;
+            /** Sample Text */
+            sample_text: string;
+        };
+        /** VoicePreviewOut */
+        VoicePreviewOut: {
+            /**
+             * Url
+             * @description null while the preview is being generated
+             */
+            url: string | null;
+        };
+        /** VoiceUpdate */
+        VoiceUpdate: {
+            /** Description */
+            description?: string | null;
+            /** Is Active */
+            is_active?: boolean | null;
+            /** Language */
+            language?: string | null;
+            /** Name */
+            name?: string | null;
+            /** Sample Text */
+            sample_text?: string | null;
         };
         /** WorldRuleCreate */
         WorldRuleCreate: {
@@ -3013,6 +3374,94 @@ export interface operations {
             };
         };
     };
+    admin_list_voices_api_v1_admin_voices_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VoiceOut"][];
+                };
+            };
+        };
+    };
+    admin_create_voice_api_v1_admin_voices_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VoiceIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VoiceOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_update_voice_api_v1_admin_voices__voice_id__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                voice_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VoiceUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VoiceOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     list_writers_api_v1_admin_writers_get: {
         parameters: {
             query?: {
@@ -3460,6 +3909,103 @@ export interface operations {
             };
         };
     };
+    edit_line_api_v1_studio_audio_lines__line_id__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                line_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LineTextIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StartRenderOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    regenerate_line_api_v1_studio_audio_lines__line_id__regenerate_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                line_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StartRenderOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    retry_render_api_v1_studio_audio_renders__render_id__retry_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                render_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StartRenderOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     accept_proposal_api_v1_studio_canon_proposals__proposal_id__accept_post: {
         parameters: {
             query?: never;
@@ -3681,6 +4227,68 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    episode_audio_api_v1_studio_episodes__episode_id__audio_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                episode_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EpisodeAudioOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    start_render_api_v1_studio_episodes__episode_id__audio_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                episode_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StartRenderOut"];
+                };
             };
             /** @description Validation Error */
             422: {
@@ -5359,6 +5967,72 @@ export interface operations {
             };
         };
     };
+    get_cast_api_v1_studio_series__series_id__voice_assignments_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                series_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssignmentsOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    set_cast_api_v1_studio_series__series_id__voice_assignments_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                series_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AssignmentsIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssignmentsOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     list_world_rules_api_v1_studio_series__series_id__world_rules_get: {
         parameters: {
             query?: {
@@ -5516,6 +6190,66 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_voices_api_v1_studio_voices_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VoiceOut"][];
+                };
+            };
+        };
+    };
+    voice_preview_api_v1_studio_voices__voice_id__preview_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                voice_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VoicePreviewOut"];
+                };
+            };
+            /** @description Preview is being generated */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VoicePreviewOut"];
+                };
             };
             /** @description Validation Error */
             422: {

@@ -64,6 +64,13 @@ services:
       migrate:
         condition: service_completed_successfully
 
+  worker-voice:
+    <<: *backend
+    command: ["arq", "app.worker.VoiceWorker"]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
 volumes:
   pgdata:
   storage:

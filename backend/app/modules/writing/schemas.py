@@ -319,3 +319,4 @@ class ScriptLineOut(BaseModel):
     text: str
     paragraph: int
     unknown_speaker: str | None
+    source_line: int

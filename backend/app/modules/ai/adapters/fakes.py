@@ -103,7 +103,7 @@ class FakeEmbedding:
         )
 
 
-SAMPLE_RATE = 16_000
+SAMPLE_RATE = 24_000  # matches the audio module's standard PCM, so no resampling
 CHARS_PER_SECOND = 15.0
 
 

@@ -3,6 +3,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { QueryState } from "@/components/QueryState";
 import { StatusBadge } from "@/components/StatusBadge";
 import { TabNav } from "@/components/TabNav";
+import { VoicesTab } from "@/writer/audio/VoicesTab";
 import { BibleTab } from "@/writer/bible/BibleTab";
 import { EpisodePage } from "@/writer/episodes/EpisodePage";
 import { EpisodesTab } from "@/writer/episodes/EpisodesTab";
@@ -36,6 +37,7 @@ export function SeriesWorkspace() {
               { to: base, label: "Overview", end: true },
               { to: `${base}/episodes`, label: "Episodes" },
               { to: `${base}/bible`, label: "Story bible" },
+              { to: `${base}/voices`, label: "Voices" },
               { to: `${base}/proposals`, label: "Canon proposals", badge: pending.data?.length },
             ]}
           />
@@ -45,6 +47,7 @@ export function SeriesWorkspace() {
               <Route path="episodes" element={<EpisodesTab seriesId={series.id} />} />
               <Route path="episodes/:episodeId/*" element={<EpisodePage seriesId={series.id} />} />
               <Route path="bible/*" element={<BibleTab seriesId={series.id} />} />
+              <Route path="voices" element={<VoicesTab seriesId={series.id} />} />
               <Route path="proposals" element={<ProposalsTab seriesId={series.id} />} />
             </Routes>
           </div>
