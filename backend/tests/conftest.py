@@ -17,6 +17,7 @@ from sqlalchemy.orm import Session
 
 from app.container import Container, build_container
 from app.main import create_app
+from app.modules.ai.pricing import seed_default_prices
 from app.modules.identity.models import Role
 from app.shared.config import Settings
 from app.shared.db import Database
@@ -40,6 +41,7 @@ def make_settings(**overrides: object) -> Settings:
         "public_base_url": "http://testserver",
         "log_level": "WARNING",
         "social_auth_backend": "fake",
+        "tracing_backend": "noop",
     }
     values.update(overrides)
     return Settings(**values)  # type: ignore[arg-type]
@@ -55,6 +57,9 @@ def database() -> Iterator[Database]:
     cfg.set_main_option("script_location", os.path.join(BACKEND_DIR, "migrations"))
     cfg.attributes["database_url"] = TEST_DATABASE_URL
     command.upgrade(cfg, "head")
+    with db.engine.begin() as conn:  # start every test from the same seed
+        conn.execute(text("TRUNCATE ai_prices"))
+    _seed_reference_data(db)
     yield db
     db.dispose()
 
@@ -72,6 +77,14 @@ def _clean_tables(database: Database) -> Iterator[None]:
         names = ", ".join(f'"{t}"' for t in tables)
         if names:
             conn.execute(text(f"TRUNCATE {names} RESTART IDENTITY CASCADE"))
+    _seed_reference_data(database)
+
+
+def _seed_reference_data(database: Database) -> None:
+    """Reference rows that migrations seed; restored after every truncation."""
+    with database.session() as session:
+        seed_default_prices(session)
+        session.commit()
 
 
 @pytest.fixture
@@ -84,6 +97,7 @@ def container(settings: Settings, database: Database) -> Container:
     built = build_container(settings)
     built.db.dispose()
     built.db = database
+    built.retry_sleep = lambda _seconds: None  # no real waiting in tests
     return built
 
 

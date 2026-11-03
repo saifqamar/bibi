@@ -15,11 +15,14 @@ Records every deviation from `BIBI_SPEC.md` / `spec_docs/`, every `[CHECK]` item
 | D2 | API sketches use paths like `/series/{id}` for both writers and listeners | Namespaces: `/studio/*` (writers/admins), `/admin/*` (admins), unprefixed listener routes, `/public/*` (website) | Avoids path collisions and makes role checks obvious. |
 | D3 | Object storage + CDN | `LocalStorage` with HMAC-signed URLs for now | Hosting not chosen; S3/CDN adapter plugs into the same port. |
 | D4 | Async stack not specified | Sync SQLAlchemy 2 + psycopg 3 in the API (FastAPI threadpool) | Simpler code and tests; workers run sync services in threads. |
+| D5 | LLM tracing "for example Langfuse" | `TracerPort` with a structured-log tracer | Tracing vendor not chosen; a Langfuse/OpenTelemetry adapter plugs into the same port. |
+| D6 | Embeddings via `EmbeddingPort` | Deterministic fake embeddings (1536 dimensions) | Anthropic has no embeddings API and the embedding provider is not chosen. |
 
 ## [CHECK] items verified
 | Item | Result (date) |
 | ---- | ------------- |
 | LangGraph interrupts + Postgres checkpointer | langgraph 1.2.x: `langgraph.types.interrupt()` inside a node, resume with `Command(resume=...)`, `PostgresSaver.from_conn_string(...).setup()`. Verified with a local run (3 Nov 2026). |
+| Anthropic Python SDK | `anthropic==2.4.0`: `client.beta.messages.stream(..., betas=["server-side-fallback-2026-07-01"], fallbacks="default", output_config={"effort": ..., "format": {"type": "json_schema", ...}})` accepted; typed errors `RateLimitError`, `APIStatusError`, `APIConnectionError`, `APITimeoutError`. Checked against the installed SDK (3 Nov 2026). |
 
 ## Defaults taken for [OPEN] items (confirm with owner)
 See `spec_docs/plans/README.md` and each plan's review table. Additional choices made while implementing:
@@ -43,3 +46,8 @@ See `spec_docs/plans/README.md` and each plan's review table. Additional choices
 | 04 | Saving text after audio, review or approval | Any text change moves the episode back to `drafting` (audio and review must be redone). Editing is blocked while `in_review`. |
 | 04 | Duration estimate | 150 words per minute, shown live in the editor and stored per version. |
 | 04 | Episode numbering | New episodes are numbered last; deleting a planned episode closes the gap; reordering cannot move published episodes. |
+| 14 | LLM provider and model | Claude via the official SDK, `claude-opus-5-5`, effort `high` (set explicitly; the model's default is `medium`), streaming. Selected with `BIBI_LLM_BACKEND=anthropic`; fakes are the default. |
+| 14 | Refusals | Server-side `fallbacks: "default"` is on (`BIBI_LLM_FALLBACKS`); a refusal that still ends the call fails the step with code `refused`. |
+| 14 | Cached input tokens | Billed at the full input price in our cost rows (slight over-estimate) until cache pricing is modelled. |
+| 14 | Budgets | Soft per-series limit set by admins; Studio shows a warning, nothing is blocked. |
+| 14 | Run progress stream | Server-sent events; the stream closes when a run waits for the writer or finishes, and resumes from `Last-Event-ID`. |

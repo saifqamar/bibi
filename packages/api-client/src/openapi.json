@@ -36,6 +36,69 @@
         "title": "AcceptInviteIn",
         "type": "object"
       },
+      "AdminCostsOut": {
+        "properties": {
+          "cost_per_finished_minute_usd": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cost Per Finished Minute Usd"
+          },
+          "from_date": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "From Date"
+          },
+          "group_by": {
+            "title": "Group By",
+            "type": "string"
+          },
+          "rows": {
+            "items": {
+              "$ref": "#/components/schemas/CostRow"
+            },
+            "title": "Rows",
+            "type": "array"
+          },
+          "to_date": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "To Date"
+          },
+          "total_usd": {
+            "title": "Total Usd",
+            "type": "string"
+          }
+        },
+        "required": [
+          "from_date",
+          "to_date",
+          "group_by",
+          "total_usd",
+          "rows"
+        ],
+        "title": "AdminCostsOut",
+        "type": "object"
+      },
       "AdminSeriesUpdate": {
         "additionalProperties": false,
         "description": "Admins can also change catalog settings. ``is_ai_assisted`` can only ever be true.",
@@ -314,6 +377,53 @@
         "title": "Body_upload_cover_api_v1_studio_series__series_id__cover_post",
         "type": "object"
       },
+      "BudgetIn": {
+        "properties": {
+          "soft_limit_usd": {
+            "anyOf": [
+              {
+                "maximum": 1000000.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Soft Limit Usd"
+          }
+        },
+        "title": "BudgetIn",
+        "type": "object"
+      },
+      "BudgetOut": {
+        "properties": {
+          "over_budget": {
+            "title": "Over Budget",
+            "type": "boolean"
+          },
+          "soft_limit_usd": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Soft Limit Usd"
+          }
+        },
+        "required": [
+          "soft_limit_usd",
+          "over_budget"
+        ],
+        "title": "BudgetOut",
+        "type": "object"
+      },
       "CharacterCreate": {
         "additionalProperties": false,
         "properties": {
@@ -509,6 +619,90 @@
           "ops"
         ],
         "title": "CompareOut",
+        "type": "object"
+      },
+      "CostRow": {
+        "properties": {
+          "cost_usd": {
+            "title": "Cost Usd",
+            "type": "string"
+          },
+          "embedding_tokens": {
+            "title": "Embedding Tokens",
+            "type": "integer"
+          },
+          "input_tokens": {
+            "title": "Input Tokens",
+            "type": "integer"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "output_tokens": {
+            "title": "Output Tokens",
+            "type": "integer"
+          },
+          "tts_characters": {
+            "title": "Tts Characters",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "key",
+          "label",
+          "cost_usd",
+          "input_tokens",
+          "output_tokens",
+          "embedding_tokens",
+          "tts_characters"
+        ],
+        "title": "CostRow",
+        "type": "object"
+      },
+      "CostSummary": {
+        "properties": {
+          "by_purpose": {
+            "items": {
+              "$ref": "#/components/schemas/PurposeCost"
+            },
+            "title": "By Purpose",
+            "type": "array"
+          },
+          "embedding_tokens": {
+            "title": "Embedding Tokens",
+            "type": "integer"
+          },
+          "input_tokens": {
+            "title": "Input Tokens",
+            "type": "integer"
+          },
+          "output_tokens": {
+            "title": "Output Tokens",
+            "type": "integer"
+          },
+          "total_usd": {
+            "title": "Total Usd",
+            "type": "string"
+          },
+          "tts_characters": {
+            "title": "Tts Characters",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "total_usd",
+          "input_tokens",
+          "output_tokens",
+          "embedding_tokens",
+          "tts_characters",
+          "by_purpose"
+        ],
+        "title": "CostSummary",
         "type": "object"
       },
       "CurrentUser": {
@@ -727,6 +921,35 @@
           "created_at"
         ],
         "title": "DraftSummary",
+        "type": "object"
+      },
+      "EpisodeCost": {
+        "properties": {
+          "cost_usd": {
+            "title": "Cost Usd",
+            "type": "string"
+          },
+          "episode_id": {
+            "format": "uuid",
+            "title": "Episode Id",
+            "type": "string"
+          },
+          "number": {
+            "title": "Number",
+            "type": "integer"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "episode_id",
+          "number",
+          "title",
+          "cost_usd"
+        ],
+        "title": "EpisodeCost",
         "type": "object"
       },
       "EpisodeCreate": {
@@ -1775,6 +1998,24 @@
         "title": "ProposalStatus",
         "type": "string"
       },
+      "PurposeCost": {
+        "properties": {
+          "cost_usd": {
+            "title": "Cost Usd",
+            "type": "string"
+          },
+          "purpose": {
+            "title": "Purpose",
+            "type": "string"
+          }
+        },
+        "required": [
+          "purpose",
+          "cost_usd"
+        ],
+        "title": "PurposeCost",
+        "type": "object"
+      },
       "RefreshIn": {
         "properties": {
           "refresh_token": {
@@ -1956,6 +2197,146 @@
         "title": "Role",
         "type": "string"
       },
+      "RunOut": {
+        "properties": {
+          "cost_usd": {
+            "default": "0",
+            "title": "Cost Usd",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "current_step": {
+            "title": "Current Step",
+            "type": "string"
+          },
+          "episode_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Episode Id"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "finished_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Finished At"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "interrupt_payload": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Interrupt Payload"
+          },
+          "request_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Request Id"
+          },
+          "series_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Series Id"
+          },
+          "started_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Started At"
+          },
+          "status": {
+            "$ref": "#/components/schemas/RunStatus"
+          },
+          "workflow": {
+            "title": "Workflow",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "workflow",
+          "episode_id",
+          "series_id",
+          "status",
+          "current_step",
+          "interrupt_payload",
+          "error",
+          "request_id",
+          "started_at",
+          "finished_at",
+          "created_at"
+        ],
+        "title": "RunOut",
+        "type": "object"
+      },
+      "RunStatus": {
+        "enum": [
+          "queued",
+          "running",
+          "waiting",
+          "succeeded",
+          "failed",
+          "cancelled"
+        ],
+        "title": "RunStatus",
+        "type": "string"
+      },
       "ScriptLineOut": {
         "properties": {
           "index": {
@@ -2011,6 +2392,30 @@
           "unknown_speaker"
         ],
         "title": "ScriptLineOut",
+        "type": "object"
+      },
+      "SeriesCostOut": {
+        "properties": {
+          "budget": {
+            "$ref": "#/components/schemas/BudgetOut"
+          },
+          "episodes": {
+            "items": {
+              "$ref": "#/components/schemas/EpisodeCost"
+            },
+            "title": "Episodes",
+            "type": "array"
+          },
+          "summary": {
+            "$ref": "#/components/schemas/CostSummary"
+          }
+        },
+        "required": [
+          "summary",
+          "episodes",
+          "budget"
+        ],
+        "title": "SeriesCostOut",
         "type": "object"
       },
       "SeriesCreate": {
@@ -2873,6 +3278,89 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/api/v1/admin/costs": {
+      "get": {
+        "operationId": "admin_costs_api_v1_admin_costs_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "from",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "From"
+            }
+          },
+          {
+            "in": "query",
+            "name": "to",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "To"
+            }
+          },
+          {
+            "in": "query",
+            "name": "group_by",
+            "required": false,
+            "schema": {
+              "default": "series",
+              "pattern": "^(series|episode|purpose|model)$",
+              "title": "Group By",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminCostsOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Admin Costs",
+        "tags": [
+          "admin: costs"
+        ]
+      }
+    },
     "/api/v1/admin/invites": {
       "get": {
         "operationId": "list_invites_api_v1_admin_invites_get",
@@ -3240,6 +3728,110 @@
         "summary": "Admin Update Series",
         "tags": [
           "admin: catalog"
+        ]
+      }
+    },
+    "/api/v1/admin/series/{series_id}/budget": {
+      "get": {
+        "operationId": "get_budget_api_v1_admin_series__series_id__budget_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "series_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Series Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BudgetOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Budget",
+        "tags": [
+          "admin: costs"
+        ]
+      },
+      "put": {
+        "operationId": "set_budget_api_v1_admin_series__series_id__budget_put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "series_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Series Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BudgetIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BudgetOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Set Budget",
+        "tags": [
+          "admin: costs"
         ]
       }
     },
@@ -4482,6 +5074,54 @@
         ]
       }
     },
+    "/api/v1/studio/episodes/{episode_id}/costs": {
+      "get": {
+        "operationId": "episode_costs_api_v1_studio_episodes__episode_id__costs_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "episode_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Episode Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CostSummary"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Episode Costs",
+        "tags": [
+          "studio: ai runs and costs"
+        ]
+      }
+    },
     "/api/v1/studio/episodes/{episode_id}/drafts": {
       "get": {
         "operationId": "list_drafts_api_v1_studio_episodes__episode_id__drafts_get",
@@ -4937,6 +5577,58 @@
         "summary": "Set Status",
         "tags": [
           "studio: episodes"
+        ]
+      }
+    },
+    "/api/v1/studio/episodes/{episode_id}/workflow-runs": {
+      "get": {
+        "operationId": "list_runs_api_v1_studio_episodes__episode_id__workflow_runs_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "episode_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Episode Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/RunOut"
+                  },
+                  "title": "Response List Runs Api V1 Studio Episodes  Episode Id  Workflow Runs Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Runs",
+        "tags": [
+          "studio: ai runs and costs"
         ]
       }
     },
@@ -5622,6 +6314,54 @@
         "summary": "Update Characters",
         "tags": [
           "studio: series and bible"
+        ]
+      }
+    },
+    "/api/v1/studio/series/{series_id}/costs": {
+      "get": {
+        "operationId": "series_costs_api_v1_studio_series__series_id__costs_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "series_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Series Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeriesCostOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Series Costs",
+        "tags": [
+          "studio: ai runs and costs"
         ]
       }
     },
@@ -7389,6 +8129,128 @@
         "summary": "Update World Rules",
         "tags": [
           "studio: series and bible"
+        ]
+      }
+    },
+    "/api/v1/studio/workflow-runs/{run_id}": {
+      "get": {
+        "operationId": "get_run_api_v1_studio_workflow_runs__run_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Run",
+        "tags": [
+          "studio: ai runs and costs"
+        ]
+      }
+    },
+    "/api/v1/studio/workflow-runs/{run_id}/events": {
+      "get": {
+        "description": "Server-sent events with run progress. Closes when the run waits for the writer or ends;\nreconnect with ``Last-Event-ID`` (or ``after``) to continue.",
+        "operationId": "stream_run_events_api_v1_studio_workflow_runs__run_id__events_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Return events after this cursor",
+            "in": "query",
+            "name": "after",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "description": "Return events after this cursor",
+              "minimum": 0,
+              "title": "After",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Last-Event-ID",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Last-Event-Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "text/event-stream": {}
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Stream Run Events",
+        "tags": [
+          "studio: ai runs and costs"
         ]
       }
     }

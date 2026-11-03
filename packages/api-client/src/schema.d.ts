@@ -1,5 +1,22 @@
 // Generated from the backend OpenAPI schema. Do not edit; run `pnpm api-client:generate`.
 export interface paths {
+    "/api/v1/admin/costs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Admin Costs */
+        get: operations["admin_costs_api_v1_admin_costs_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/invites": {
         parameters: {
             query?: never;
@@ -79,6 +96,24 @@ export interface paths {
         get?: never;
         /** Admin Update Series */
         put: operations["admin_update_series_api_v1_admin_series__series_id__put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/series/{series_id}/budget": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Budget */
+        get: operations["get_budget_api_v1_admin_series__series_id__budget_get"];
+        /** Set Budget */
+        put: operations["set_budget_api_v1_admin_series__series_id__budget_put"];
         post?: never;
         delete?: never;
         options?: never;
@@ -465,6 +500,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/studio/episodes/{episode_id}/costs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Episode Costs */
+        get: operations["episode_costs_api_v1_studio_episodes__episode_id__costs_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/studio/episodes/{episode_id}/drafts": {
         parameters: {
             query?: never;
@@ -585,6 +637,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/studio/episodes/{episode_id}/workflow-runs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Runs */
+        get: operations["list_runs_api_v1_studio_episodes__episode_id__workflow_runs_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/studio/series": {
         parameters: {
             query?: never;
@@ -687,6 +756,23 @@ export interface paths {
         post?: never;
         /** Delete Characters */
         delete: operations["delete_characters_api_v1_studio_series__series_id__characters__entity_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/studio/series/{series_id}/costs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Series Costs */
+        get: operations["series_costs_api_v1_studio_series__series_id__costs_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -929,6 +1015,44 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/studio/workflow-runs/{run_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Run */
+        get: operations["get_run_api_v1_studio_workflow_runs__run_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/studio/workflow-runs/{run_id}/events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Stream Run Events
+         * @description Server-sent events with run progress. Closes when the run waits for the writer or ends;
+         *     reconnect with ``Last-Event-ID`` (or ``after``) to continue.
+         */
+        get: operations["stream_run_events_api_v1_studio_workflow_runs__run_id__events_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -941,6 +1065,21 @@ export interface components {
             password: string;
             /** Token */
             token: string;
+        };
+        /** AdminCostsOut */
+        AdminCostsOut: {
+            /** Cost Per Finished Minute Usd */
+            cost_per_finished_minute_usd?: string | null;
+            /** From Date */
+            from_date: string | null;
+            /** Group By */
+            group_by: string;
+            /** Rows */
+            rows: components["schemas"]["CostRow"][];
+            /** To Date */
+            to_date: string | null;
+            /** Total Usd */
+            total_usd: string;
         };
         /**
          * AdminSeriesUpdate
@@ -1014,6 +1153,18 @@ export interface components {
         Body_upload_cover_api_v1_studio_series__series_id__cover_post: {
             /** File */
             file: string;
+        };
+        /** BudgetIn */
+        BudgetIn: {
+            /** Soft Limit Usd */
+            soft_limit_usd?: number | string | null;
+        };
+        /** BudgetOut */
+        BudgetOut: {
+            /** Over Budget */
+            over_budget: boolean;
+            /** Soft Limit Usd */
+            soft_limit_usd: string | null;
         };
         /** CharacterCreate */
         CharacterCreate: {
@@ -1091,6 +1242,38 @@ export interface components {
             b: number;
             /** Ops */
             ops: components["schemas"]["DiffOp"][];
+        };
+        /** CostRow */
+        CostRow: {
+            /** Cost Usd */
+            cost_usd: string;
+            /** Embedding Tokens */
+            embedding_tokens: number;
+            /** Input Tokens */
+            input_tokens: number;
+            /** Key */
+            key: string;
+            /** Label */
+            label: string;
+            /** Output Tokens */
+            output_tokens: number;
+            /** Tts Characters */
+            tts_characters: number;
+        };
+        /** CostSummary */
+        CostSummary: {
+            /** By Purpose */
+            by_purpose: components["schemas"]["PurposeCost"][];
+            /** Embedding Tokens */
+            embedding_tokens: number;
+            /** Input Tokens */
+            input_tokens: number;
+            /** Output Tokens */
+            output_tokens: number;
+            /** Total Usd */
+            total_usd: string;
+            /** Tts Characters */
+            tts_characters: number;
         };
         /**
          * CurrentUser
@@ -1179,6 +1362,20 @@ export interface components {
             version: number;
             /** Word Count */
             word_count: number;
+        };
+        /** EpisodeCost */
+        EpisodeCost: {
+            /** Cost Usd */
+            cost_usd: string;
+            /**
+             * Episode Id
+             * Format: uuid
+             */
+            episode_id: string;
+            /** Number */
+            number: number;
+            /** Title */
+            title: string;
         };
         /** EpisodeCreate */
         EpisodeCreate: {
@@ -1584,6 +1781,13 @@ export interface components {
          * @enum {string}
          */
         ProposalStatus: "pending" | "accepted" | "rejected";
+        /** PurposeCost */
+        PurposeCost: {
+            /** Cost Usd */
+            cost_usd: string;
+            /** Purpose */
+            purpose: string;
+        };
         /** RefreshIn */
         RefreshIn: {
             /** Refresh Token */
@@ -1662,6 +1866,50 @@ export interface components {
          * @enum {string}
          */
         Role: "listener" | "writer" | "admin";
+        /** RunOut */
+        RunOut: {
+            /**
+             * Cost Usd
+             * @default 0
+             */
+            cost_usd: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Current Step */
+            current_step: string;
+            /** Episode Id */
+            episode_id: string | null;
+            /** Error */
+            error: string | null;
+            /** Finished At */
+            finished_at: string | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Interrupt Payload */
+            interrupt_payload: {
+                [key: string]: unknown;
+            } | null;
+            /** Request Id */
+            request_id: string | null;
+            /** Series Id */
+            series_id: string | null;
+            /** Started At */
+            started_at: string | null;
+            status: components["schemas"]["RunStatus"];
+            /** Workflow */
+            workflow: string;
+        };
+        /**
+         * RunStatus
+         * @enum {string}
+         */
+        RunStatus: "queued" | "running" | "waiting" | "succeeded" | "failed" | "cancelled";
         /** ScriptLineOut */
         ScriptLineOut: {
             /** Index */
@@ -1679,6 +1927,13 @@ export interface components {
             text: string;
             /** Unknown Speaker */
             unknown_speaker: string | null;
+        };
+        /** SeriesCostOut */
+        SeriesCostOut: {
+            budget: components["schemas"]["BudgetOut"];
+            /** Episodes */
+            episodes: components["schemas"]["EpisodeCost"][];
+            summary: components["schemas"]["CostSummary"];
         };
         /** SeriesCreate */
         SeriesCreate: {
@@ -1997,6 +2252,39 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    admin_costs_api_v1_admin_costs_get: {
+        parameters: {
+            query?: {
+                from?: string | null;
+                to?: string | null;
+                group_by?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminCostsOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     list_invites_api_v1_admin_invites_get: {
         parameters: {
             query?: {
@@ -2181,6 +2469,72 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SeriesOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_budget_api_v1_admin_series__series_id__budget_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                series_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BudgetOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    set_budget_api_v1_admin_series__series_id__budget_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                series_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BudgetIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BudgetOut"];
                 };
             };
             /** @description Validation Error */
@@ -3020,6 +3374,37 @@ export interface operations {
             };
         };
     };
+    episode_costs_api_v1_studio_episodes__episode_id__costs_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                episode_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CostSummary"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     list_drafts_api_v1_studio_episodes__episode_id__drafts_get: {
         parameters: {
             query?: never;
@@ -3272,6 +3657,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["EpisodeOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_runs_api_v1_studio_episodes__episode_id__workflow_runs_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                episode_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RunOut"][];
                 };
             };
             /** @description Validation Error */
@@ -3641,6 +4057,37 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    series_costs_api_v1_studio_series__series_id__costs_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                series_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SeriesCostOut"];
+                };
             };
             /** @description Validation Error */
             422: {
@@ -4620,6 +5067,73 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_run_api_v1_studio_workflow_runs__run_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                run_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RunOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    stream_run_events_api_v1_studio_workflow_runs__run_id__events_get: {
+        parameters: {
+            query?: {
+                /** @description Return events after this cursor */
+                after?: number;
+            };
+            header?: {
+                "Last-Event-ID"?: number | null;
+            };
+            path: {
+                run_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/event-stream": unknown;
+                };
             };
             /** @description Validation Error */
             422: {

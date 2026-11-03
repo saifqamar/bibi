@@ -2,6 +2,7 @@ import { Link, Route, Routes, useParams } from "react-router";
 import { QueryState } from "@/components/QueryState";
 import { StatusBadge } from "@/components/StatusBadge";
 import { TabNav } from "@/components/TabNav";
+import { AiTab } from "./AiTab";
 import { EditorTab } from "./EditorTab";
 import { HistoryTab } from "./HistoryTab";
 import { PlanTab } from "./PlanTab";
@@ -30,12 +31,14 @@ export function EpisodePage({ seriesId }: { seriesId: string }) {
               { to: base, label: "Plan", end: true },
               { to: `${base}/editor`, label: "Editor" },
               { to: `${base}/history`, label: "History" },
+              { to: `${base}/ai`, label: "AI & cost" },
             ]}
           />
           <Routes>
             <Route index element={<PlanTab key={episode.updated_at} episode={episode} />} />
             <Route path="editor" element={<EditorTab episode={episode} />} />
             <Route path="history" element={<HistoryTab episode={episode} />} />
+            <Route path="ai" element={<AiTab episode={episode} />} />
           </Routes>
         </div>
       )}
