@@ -137,3 +137,52 @@ class SeriesBudget(TimestampMixin, Base):
         ForeignKey("series.id", ondelete="CASCADE"), primary_key=True
     )
     soft_limit_usd: Mapped[Decimal] = mapped_column(Numeric(12, 2))
+
+
+class IssueSeverity(StrEnum):
+    ERROR = "error"
+    WARNING = "warning"
+
+
+class IssueStatus(StrEnum):
+    OPEN = "open"
+    FIXED = "fixed"
+    INTENTIONAL = "intentional"
+
+
+ISSUE_TYPES = ("character_fact", "timeline", "world_rule", "plot_thread", "naming")
+
+
+def _str_enum(enum_cls: type[StrEnum], name: str) -> Enum:
+    return Enum(
+        enum_cls,
+        name=name,
+        native_enum=False,
+        create_constraint=True,
+        length=20,
+        values_callable=lambda e: [m.value for m in e],
+    )
+
+
+class ContinuityIssue(UUIDPrimaryKey, TimestampMixin, Base):
+    __tablename__ = "continuity_issues"
+    __table_args__ = (Index("ix_continuity_issues_episode_status", "episode_id", "status"),)
+
+    workflow_run_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("workflow_runs.id", ondelete="SET NULL"), nullable=True
+    )
+    episode_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("episodes.id", ondelete="CASCADE"))
+    draft_version: Mapped[int] = mapped_column(Integer)
+    severity: Mapped[IssueSeverity] = mapped_column(_str_enum(IssueSeverity, "issue_severity"))
+    type: Mapped[str] = mapped_column(String(30))
+    description: Mapped[str] = mapped_column(Text)
+    quote: Mapped[str] = mapped_column(Text)
+    source_ref: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
+    status: Mapped[IssueStatus] = mapped_column(
+        _str_enum(IssueStatus, "issue_status"), default=IssueStatus.OPEN
+    )
+    resolution_note: Mapped[str] = mapped_column(Text, default="")
+    resolved_by: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("users.id", ondelete="SET NULL"), nullable=True
+    )
+    resolved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
