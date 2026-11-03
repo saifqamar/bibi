@@ -107,7 +107,12 @@ def test_pagination_and_audit(test_client: TestClient, db: Session) -> None:
         record_audit(db, actor_id=None, action=action, entity_type="thing", entity_id="1")
     db.commit()
     body = test_client.get("/api/v1/_test/audit?limit=2&offset=1").json()
-    assert body == {"items": [{"action": "b"}, {"action": "c"}], "total": 3, "limit": 2, "offset": 1}
+    assert body == {
+        "items": [{"action": "b"}, {"action": "c"}],
+        "total": 3,
+        "limit": 2,
+        "offset": 1,
+    }
     assert test_client.get("/api/v1/_test/audit?limit=500").status_code == 422
 
 

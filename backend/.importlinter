@@ -1,0 +1,272 @@
+[importlinter]
+root_package = app
+include_external_packages = True
+
+# Rule (spec 14): modules talk only through each other's public package (app.modules.<name>).
+# Importing another module's submodules (models, repository, service, api, ...) is forbidden.
+
+[importlinter:contract:boundary-identity]
+name = Only the public package of 'identity' may be imported by other modules
+type = forbidden
+allow_indirect_imports = True
+source_modules =
+    app.modules.catalog
+    app.modules.writing
+    app.modules.ai
+    app.modules.audio
+    app.modules.listening
+    app.modules.analytics
+    app.modules.admin
+    app.modules.billing
+    app.modules.notifications
+forbidden_modules =
+    app.modules.identity.models
+    app.modules.identity.repository
+    app.modules.identity.service
+    app.modules.identity.api
+    app.modules.identity.schemas
+    app.modules.identity.ports
+    app.modules.identity.adapters
+    app.modules.identity.graphs
+
+[importlinter:contract:boundary-catalog]
+name = Only the public package of 'catalog' may be imported by other modules
+type = forbidden
+allow_indirect_imports = True
+source_modules =
+    app.modules.identity
+    app.modules.writing
+    app.modules.ai
+    app.modules.audio
+    app.modules.listening
+    app.modules.analytics
+    app.modules.admin
+    app.modules.billing
+    app.modules.notifications
+forbidden_modules =
+    app.modules.catalog.models
+    app.modules.catalog.repository
+    app.modules.catalog.service
+    app.modules.catalog.api
+    app.modules.catalog.schemas
+    app.modules.catalog.ports
+    app.modules.catalog.adapters
+    app.modules.catalog.graphs
+
+[importlinter:contract:boundary-writing]
+name = Only the public package of 'writing' may be imported by other modules
+type = forbidden
+allow_indirect_imports = True
+source_modules =
+    app.modules.identity
+    app.modules.catalog
+    app.modules.ai
+    app.modules.audio
+    app.modules.listening
+    app.modules.analytics
+    app.modules.admin
+    app.modules.billing
+    app.modules.notifications
+forbidden_modules =
+    app.modules.writing.models
+    app.modules.writing.repository
+    app.modules.writing.service
+    app.modules.writing.api
+    app.modules.writing.schemas
+    app.modules.writing.ports
+    app.modules.writing.adapters
+    app.modules.writing.graphs
+
+[importlinter:contract:boundary-ai]
+name = Only the public package of 'ai' may be imported by other modules
+type = forbidden
+allow_indirect_imports = True
+source_modules =
+    app.modules.identity
+    app.modules.catalog
+    app.modules.writing
+    app.modules.audio
+    app.modules.listening
+    app.modules.analytics
+    app.modules.admin
+    app.modules.billing
+    app.modules.notifications
+forbidden_modules =
+    app.modules.ai.models
+    app.modules.ai.repository
+    app.modules.ai.service
+    app.modules.ai.api
+    app.modules.ai.schemas
+    app.modules.ai.ports
+    app.modules.ai.adapters
+    app.modules.ai.graphs
+
+[importlinter:contract:boundary-audio]
+name = Only the public package of 'audio' may be imported by other modules
+type = forbidden
+allow_indirect_imports = True
+source_modules =
+    app.modules.identity
+    app.modules.catalog
+    app.modules.writing
+    app.modules.ai
+    app.modules.listening
+    app.modules.analytics
+    app.modules.admin
+    app.modules.billing
+    app.modules.notifications
+forbidden_modules =
+    app.modules.audio.models
+    app.modules.audio.repository
+    app.modules.audio.service
+    app.modules.audio.api
+    app.modules.audio.schemas
+    app.modules.audio.ports
+    app.modules.audio.adapters
+    app.modules.audio.graphs
+
+[importlinter:contract:boundary-listening]
+name = Only the public package of 'listening' may be imported by other modules
+type = forbidden
+allow_indirect_imports = True
+source_modules =
+    app.modules.identity
+    app.modules.catalog
+    app.modules.writing
+    app.modules.ai
+    app.modules.audio
+    app.modules.analytics
+    app.modules.admin
+    app.modules.billing
+    app.modules.notifications
+forbidden_modules =
+    app.modules.listening.models
+    app.modules.listening.repository
+    app.modules.listening.service
+    app.modules.listening.api
+    app.modules.listening.schemas
+    app.modules.listening.ports
+    app.modules.listening.adapters
+    app.modules.listening.graphs
+
+[importlinter:contract:boundary-analytics]
+name = Only the public package of 'analytics' may be imported by other modules
+type = forbidden
+allow_indirect_imports = True
+source_modules =
+    app.modules.identity
+    app.modules.catalog
+    app.modules.writing
+    app.modules.ai
+    app.modules.audio
+    app.modules.listening
+    app.modules.admin
+    app.modules.billing
+    app.modules.notifications
+forbidden_modules =
+    app.modules.analytics.models
+    app.modules.analytics.repository
+    app.modules.analytics.service
+    app.modules.analytics.api
+    app.modules.analytics.schemas
+    app.modules.analytics.ports
+    app.modules.analytics.adapters
+    app.modules.analytics.graphs
+
+[importlinter:contract:boundary-admin]
+name = Only the public package of 'admin' may be imported by other modules
+type = forbidden
+allow_indirect_imports = True
+source_modules =
+    app.modules.identity
+    app.modules.catalog
+    app.modules.writing
+    app.modules.ai
+    app.modules.audio
+    app.modules.listening
+    app.modules.analytics
+    app.modules.billing
+    app.modules.notifications
+forbidden_modules =
+    app.modules.admin.models
+    app.modules.admin.repository
+    app.modules.admin.service
+    app.modules.admin.api
+    app.modules.admin.schemas
+    app.modules.admin.ports
+    app.modules.admin.adapters
+    app.modules.admin.graphs
+
+[importlinter:contract:boundary-billing]
+name = Only the public package of 'billing' may be imported by other modules
+type = forbidden
+allow_indirect_imports = True
+source_modules =
+    app.modules.identity
+    app.modules.catalog
+    app.modules.writing
+    app.modules.ai
+    app.modules.audio
+    app.modules.listening
+    app.modules.analytics
+    app.modules.admin
+    app.modules.notifications
+forbidden_modules =
+    app.modules.billing.models
+    app.modules.billing.repository
+    app.modules.billing.service
+    app.modules.billing.api
+    app.modules.billing.schemas
+    app.modules.billing.ports
+    app.modules.billing.adapters
+    app.modules.billing.graphs
+
+[importlinter:contract:boundary-notifications]
+name = Only the public package of 'notifications' may be imported by other modules
+type = forbidden
+allow_indirect_imports = True
+source_modules =
+    app.modules.identity
+    app.modules.catalog
+    app.modules.writing
+    app.modules.ai
+    app.modules.audio
+    app.modules.listening
+    app.modules.analytics
+    app.modules.admin
+    app.modules.billing
+forbidden_modules =
+    app.modules.notifications.models
+    app.modules.notifications.repository
+    app.modules.notifications.service
+    app.modules.notifications.api
+    app.modules.notifications.schemas
+    app.modules.notifications.ports
+    app.modules.notifications.adapters
+    app.modules.notifications.graphs
+
+[importlinter:contract:langgraph-only-in-ai]
+name = LangGraph is only used inside the ai module
+type = forbidden
+source_modules =
+    app.shared
+    app.modules.identity
+    app.modules.catalog
+    app.modules.writing
+    app.modules.audio
+    app.modules.listening
+    app.modules.analytics
+    app.modules.admin
+    app.modules.billing
+    app.modules.notifications
+forbidden_modules =
+    langgraph
+    langchain_core
+
+[importlinter:contract:shared-is-base-layer]
+name = Shared code never depends on feature modules
+type = forbidden
+source_modules =
+    app.shared
+forbidden_modules =
+    app.modules

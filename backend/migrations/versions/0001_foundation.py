@@ -27,8 +27,18 @@ def upgrade() -> None:
         sa.Column("entity_type", sa.String(length=50), nullable=False),
         sa.Column("entity_id", sa.String(length=64), nullable=True),
         sa.Column("metadata", postgresql.JSONB(astext_type=sa.Text()), nullable=False),
-        sa.Column("created_at", sa.DateTime(timezone=True), server_default=sa.text("now()"), nullable=False),
-        sa.Column("updated_at", sa.DateTime(timezone=True), server_default=sa.text("now()"), nullable=False),
+        sa.Column(
+            "created_at",
+            sa.DateTime(timezone=True),
+            server_default=sa.text("now()"),
+            nullable=False,
+        ),
+        sa.Column(
+            "updated_at",
+            sa.DateTime(timezone=True),
+            server_default=sa.text("now()"),
+            nullable=False,
+        ),
         sa.PrimaryKeyConstraint("id", name=op.f("pk_audit_log")),
     )
     op.create_index("ix_audit_log_entity", "audit_log", ["entity_type", "entity_id"])
