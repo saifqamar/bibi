@@ -18,3 +18,41 @@ jest.mock("expo-secure-store", () => {
     __store: store,
   };
 });
+
+// Downloads write to a fake file system; each test can inspect the jest.fn calls.
+jest.mock("expo-file-system/legacy", () => ({
+  documentDirectory: "file:///docs/",
+  makeDirectoryAsync: jest.fn(async () => undefined),
+  deleteAsync: jest.fn(async () => undefined),
+  getInfoAsync: jest.fn(async () => ({
+    exists: true,
+    size: 9_600_000,
+    isDirectory: false,
+  })),
+  createDownloadResumable: jest.fn((url: string, fileUri: string) => ({
+    downloadAsync: jest.fn(async () => ({
+      uri: fileUri,
+      status: 200,
+      headers: {},
+      mimeType: "audio/mpeg",
+    })),
+    resumeAsync: jest.fn(async () => ({
+      uri: fileUri,
+      status: 200,
+      headers: {},
+      mimeType: "audio/mpeg",
+    })),
+    pauseAsync: jest.fn(async () => ({
+      url,
+      fileUri,
+      options: {},
+      resumeData: "resume",
+    })),
+    savable: jest.fn(() => ({
+      url,
+      fileUri,
+      options: {},
+      resumeData: "resume",
+    })),
+  })),
+}));

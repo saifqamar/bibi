@@ -83,3 +83,9 @@ See `spec_docs/plans/README.md` and each plan's review table. Additional choices
 | 10 | Session storage | Tokens and user live in the device keychain (`expo-secure-store`); a 401 triggers one shared refresh, a rejected refresh signs out, a network failure keeps the session. |
 | 10 | Offline browse | Home, series and progress queries are persisted (AsyncStorage, kept 7 days) and shown with an offline banner. |
 | 10 | Shared validation package | `packages/schemas` not created: both apps use the generated OpenAPI types and the server validates; no client-side schema is shared yet. |
+| 11 | Lock-screen controls | Play/pause and ±15 s seek. expo-audio reports no next/previous remote events for a single player, so episode skipping is in the app only. |
+| 11 | Paid episodes | Playback and download are not gated yet; billing (plan 16) adds the entitlement check to `GET /episodes/{id}/playback`. |
+| 11 | Unpublished downloads ([OPEN] plan 08) | Removed from the device on the next sync (`available: false` from `/me/downloads`). |
+| 11 | "Previous" | Restarts the episode after its first 5 seconds; before that it goes to the previous episode. |
+| 11 | Sign-out | Stops playback and deletes downloads from the device; progress and events already sent stay on the server. |
+

@@ -5,17 +5,15 @@ import { useSession } from "./session";
 type TokenPair = Schemas["TokenPair"];
 
 export async function storeTokenPair(pair: TokenPair): Promise<void> {
-  await useSession
-    .getState()
-    .signIn(
-      {
-        id: pair.user.id,
-        email: pair.user.email,
-        role: pair.user.role,
-        display_name: pair.user.display_name,
-      },
-      { accessToken: pair.access_token, refreshToken: pair.refresh_token },
-    );
+  await useSession.getState().signIn(
+    {
+      id: pair.user.id,
+      email: pair.user.email,
+      role: pair.user.role,
+      display_name: pair.user.display_name,
+    },
+    { accessToken: pair.access_token, refreshToken: pair.refresh_token },
+  );
 }
 
 let refreshing: Promise<boolean> | null = null;

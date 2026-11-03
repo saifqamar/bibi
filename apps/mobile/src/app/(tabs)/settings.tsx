@@ -3,12 +3,20 @@ import { useState } from "react";
 import { Text, View } from "react-native";
 import { Body, Button, Screen, Title } from "@/components/ui";
 import { errorMessage } from "@/lib/format";
+import { useDownloads } from "@/downloads/store";
 import { useSession } from "@/lib/session";
+import { usePlayer } from "@/player/store";
 
 export default function Settings() {
   const { user, signOut } = useSession();
   const [confirming, setConfirming] = useState(false);
-  const deleteAccount = useDeleteAccount(() => void signOut());
+  // Downloads belong to the account: leaving removes them from this device too.
+  const leave = async () => {
+    await usePlayer.getState().stop();
+    await useDownloads.getState().clearLocal();
+    await signOut();
+  };
+  const deleteAccount = useDeleteAccount(() => void leave());
   return (
     <Screen>
       <View className="gap-6 px-4 py-4">
@@ -17,7 +25,7 @@ export default function Settings() {
         <Button
           variant="outline"
           label="Sign out"
-          onPress={() => void signOut()}
+          onPress={() => void leave()}
         />
         <View className="gap-3 rounded-xl border border-border p-4 dark:border-border-dark">
           <Text className="font-semibold text-foreground dark:text-foreground-dark">

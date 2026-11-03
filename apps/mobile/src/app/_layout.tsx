@@ -9,6 +9,9 @@ import { Loading } from "@/components/ui";
 import { api } from "@/lib/api";
 import { makePersister, makeQueryClient } from "@/lib/queryClient";
 import { useSession } from "@/lib/session";
+import { useBackgroundSync } from "@/lib/sync";
+import { useDownloads } from "@/downloads/store";
+import { usePlayer } from "@/player/store";
 
 /** Signed-out listeners only see the (auth) group; signed-in ones never see it. */
 function AuthRedirect({ signedIn }: { signedIn: boolean }) {
@@ -24,7 +27,10 @@ export default function RootLayout() {
   const { ready, user, load } = useSession();
   useEffect(() => {
     void load();
+    void useDownloads.getState().load();
+    void usePlayer.getState().loadRate();
   }, [load]);
+  useBackgroundSync(ready && Boolean(user));
 
   return (
     <SafeAreaProvider>
@@ -41,6 +47,10 @@ export default function RootLayout() {
             <Stack.Screen
               name="series/[id]"
               options={{ headerShown: true, title: "" }}
+            />
+            <Stack.Screen
+              name="downloads"
+              options={{ headerShown: true, title: "Downloads" }}
             />
             <Stack.Screen
               name="player/[episodeId]"

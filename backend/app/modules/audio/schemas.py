@@ -109,3 +109,12 @@ class StartRenderOut(BaseModel):
 
 class LineTextIn(BaseModel):
     text: str = Field(min_length=1, max_length=4000)
+
+
+class PlaybackOut(BaseModel):
+    episode_id: uuid.UUID
+    series_id: uuid.UUID
+    url: str = Field(description="Signed, expiring URL of the published audio")
+    format: str
+    duration_seconds: Decimal | None
+    next_episode_id: uuid.UUID | None = Field(description="Next live episode, for auto-advance")
