@@ -1,14 +1,13 @@
 import { Route, Routes } from "react-router";
-
-function AdminHome() {
-  return <h1 className="text-2xl font-bold">Admin</h1>;
-}
+import { ReviewDetailPage } from "./reviews/ReviewDetailPage";
+import { ReviewQueuePage } from "./reviews/ReviewQueuePage";
 
 /** Loaded lazily so writers never download admin code. */
 export default function AdminApp() {
   return (
     <Routes>
-      <Route index element={<AdminHome />} />
+      <Route index element={<ReviewQueuePage />} />
+      <Route path="reviews/:itemId" element={<ReviewDetailPage />} />
     </Routes>
   );
 }

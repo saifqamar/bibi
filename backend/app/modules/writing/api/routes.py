@@ -220,5 +220,6 @@ def reject_proposal(
 
 
 from app.modules.writing.api.episodes import router as episodes_router  # noqa: E402
+from app.modules.writing.api.listener import router as listener_router  # noqa: E402
 
-routers = [router, episodes_router]
+routers = [router, episodes_router, listener_router]

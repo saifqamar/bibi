@@ -1,5 +1,6 @@
 import uuid
 from datetime import datetime
+from decimal import Decimal
 from enum import StrEnum
 from typing import Any
 
@@ -12,6 +13,7 @@ from sqlalchemy import (
     ForeignKey,
     Index,
     Integer,
+    Numeric,
     String,
     Text,
     UniqueConstraint,
@@ -180,7 +182,15 @@ class Episode(UUIDPrimaryKey, TimestampMixin, Base):
     )
     # None = follow the series' free episode count; True/False = admin override (plan 09).
     is_free: Mapped[bool | None] = mapped_column(Boolean, nullable=True)
+    # What listeners hear. Set on publish and kept while a new version is being prepared, so
+    # editing a published episode does not take it offline.
     published_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    published_audio_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("audio_assets.id", ondelete="SET NULL", use_alter=True), nullable=True
+    )
+    published_duration_seconds: Mapped[Decimal | None] = mapped_column(
+        Numeric(10, 3), nullable=True
+    )
 
 
 class EpisodePlan(UUIDPrimaryKey, TimestampMixin, Base):

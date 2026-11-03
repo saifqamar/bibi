@@ -34,8 +34,14 @@ export interface MockRoute {
   respond: (request: Request) => Response | Promise<Response>;
 }
 
+/** Endpoints every Studio page touches (the layout's notifications bell). */
+const DEFAULT_ROUTES: MockRoute[] = [
+  { path: "/api/v1/studio/notifications", respond: () => jsonResponse({ items: [], unread: 0 }) },
+];
+
 /** Stubs global fetch with simple method + path matching; unmatched calls fail the test. */
 export function mockFetch(routes: MockRoute[]) {
+  routes = [...routes, ...DEFAULT_ROUTES];
   const calls: Request[] = [];
   const fn = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
     const request = input instanceof Request ? input : new Request(input, init);
