@@ -1,11 +1,16 @@
 import uuid
+from datetime import date
 
 from fastapi import APIRouter, Depends, Query, Request, Response, status
 from sqlalchemy.orm import Session
 
+from app.modules.admin.catalog_admin import AdminCatalogService, audit_query
 from app.modules.admin.schemas import (
     ApproveIn,
+    AuditEntryOut,
     CommentsIn,
+    EpisodeAccessIn,
+    EpisodeAccessOut,
     NotificationsOut,
     ReviewDetailOut,
     ReviewItemOut,
@@ -134,6 +139,50 @@ def unpublish(
 ) -> Response:
     service.unpublish(admin, episode_id)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@admin_router.get("/audit-log", response_model=Page[AuditEntryOut], response_model_by_alias=True)
+def audit_log(
+    actor_id: uuid.UUID | None = None,
+    entity_type: str | None = Query(None, max_length=50),
+    entity_id: str | None = Query(None, max_length=64),
+    from_date: date | None = Query(None, alias="from"),
+    to_date: date | None = Query(None, alias="to"),
+    params: PageParams = Depends(page_params),
+    _: CurrentUser = Depends(require_admin),
+    db: Session = Depends(get_db),
+) -> Page[AuditEntryOut]:
+    stmt = audit_query(
+        actor_id=actor_id,
+        entity_type=entity_type,
+        entity_id=entity_id,
+        start=from_date,
+        end=to_date,
+    )
+    rows, total = paginate(db, stmt, params)
+    return make_page([AuditEntryOut.model_validate(r) for r in rows], total, params)
+
+
+@admin_router.get("/writer-series-counts", response_model=dict[str, int])
+def writer_series_counts(
+    request: Request, _: CurrentUser = Depends(require_admin), db: Session = Depends(get_db)
+) -> dict[str, int]:
+    counts = AdminCatalogService(db, request.app.state.container).writer_series_counts()
+    return {str(k): v for k, v in counts.items()}
+
+
+@admin_router.put("/episodes/{episode_id}/access", response_model=EpisodeAccessOut)
+def set_episode_access(
+    episode_id: uuid.UUID,
+    body: EpisodeAccessIn,
+    request: Request,
+    admin: CurrentUser = Depends(require_admin),
+    db: Session = Depends(get_db),
+) -> EpisodeAccessOut:
+    result = AdminCatalogService(db, request.app.state.container).set_episode_access(
+        admin, episode_id, body.is_free
+    )
+    return EpisodeAccessOut.model_validate(result)
 
 
 routers = [studio_router, admin_router]

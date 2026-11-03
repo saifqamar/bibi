@@ -96,6 +96,14 @@ class CatalogService:
             stmt = stmt.where(Series.id == series_id)
         return list(self.db.scalars(stmt))
 
+    def series_counts_by_owner(self) -> dict[uuid.UUID, int]:
+        rows = self.db.execute(
+            select(Series.owner_writer_id, func.count())
+            .where(Series.owner_writer_id.is_not(None))
+            .group_by(Series.owner_writer_id)
+        ).all()
+        return {owner: count for owner, count in rows if owner is not None}
+
     def create_series(self, user: CurrentUser, data: SeriesCreate) -> Series:
         series = Series(owner_writer_id=user.id, **data.model_dump())
         self.db.add(series)
