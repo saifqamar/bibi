@@ -52,6 +52,10 @@ class EpisodeService:
             raise NotFound("Episode not found")
         return episode
 
+    def get(self, episode_id: uuid.UUID) -> Episode:
+        """System read without user scoping (for other modules' internal use)."""
+        return self._episode(episode_id)
+
     def get_for_user(self, user: CurrentUser, episode_id: uuid.UUID) -> Episode:
         episode = self._episode(episode_id)
         self.catalog.get_series_for_user(user, episode.series_id)  # 404 for other writers
