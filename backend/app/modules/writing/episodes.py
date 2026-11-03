@@ -251,6 +251,25 @@ class EpisodeService:
         episode = self._episode(episode_id)
         return self._add_version(episode, text, DraftSource.AI, None, note)
 
+    def save_writer_draft_from_workflow(
+        self, episode_id: uuid.UUID, text: str, user_id: uuid.UUID, note: str = ""
+    ) -> EpisodeDraft:
+        """Saves text the writer submitted while answering a workflow step (source ``human``)."""
+        episode = self._episode(episode_id)
+        current = self._current_draft(episode)
+        if current is not None and current.text == text:
+            return current
+        return self._add_version(episode, text, DraftSource.HUMAN, user_id, note)
+
+    def current_text(self, episode_id: uuid.UUID) -> tuple[int | None, str]:
+        """``(version, text)`` of the current draft; ``(None, "")`` before the first draft."""
+        draft = self._current_draft(self._episode(episode_id))
+        return (draft.version, draft.text) if draft else (None, "")
+
+    def plan(self, episode_id: uuid.UUID) -> PlanOut:
+        plan = self._plan(self._episode(episode_id))
+        return PlanOut(beats=[Beat.model_validate(b) for b in plan.beats], notes=plan.notes)
+
     def _draft(self, episode: Episode, version: int) -> EpisodeDraft:
         draft = self.db.scalar(
             select(EpisodeDraft).where(

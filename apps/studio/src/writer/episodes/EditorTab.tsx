@@ -10,6 +10,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { errorMessage } from "@/lib/errors";
 import { estimatedSeconds, formatDuration, parseScript, wordCount } from "@/lib/script";
 import { cn } from "@/lib/utils";
+import { useEpisodeRuns } from "./AiTab";
+import { activeRun, useWorkflowActions } from "./drafting";
 import { episodeKeys, useCharacterNames, useDraft, type Episode } from "./queries";
 
 export function EditorTab({ episode }: { episode: Episode }) {
@@ -23,6 +25,11 @@ function Editor({ episode, initialText }: { episode: Episode; initialText: strin
   const names = useCharacterNames(episode.series_id);
   const [text, setText] = useState(initialText);
   const [note, setNote] = useState("");
+  const [selection, setSelection] = useState<{ start: number; end: number } | null>(null);
+  const [rewriteNote, setRewriteNote] = useState("");
+  const runs = useEpisodeRuns(episode.id);
+  const run = activeRun(runs.data);
+  const { resume, regenerate } = useWorkflowActions(episode);
   const dirty = text !== initialText;
   const seconds = estimatedSeconds(text);
   const lines = useMemo(() => parseScript(text, names.data ?? []), [text, names.data]);
@@ -46,6 +53,19 @@ function Editor({ episode, initialText }: { episode: Episode; initialText: strin
   });
   const conflict = save.error instanceof ApiRequestError && save.error.code === "version_conflict";
   const locked = episode.status === "in_review";
+  const reviewing = run?.status === "waiting" && (run.interrupt_payload as { kind?: string } | null)?.kind === "draft_review";
+  // Rewrites apply to the saved text, so the selection is only offered on unsaved-free text.
+  const canRewrite = Boolean(selection) && !dirty && !locked && (reviewing || !run);
+  const rewriteError = resume.error ?? regenerate.error;
+
+  const requestRewrite = () => {
+    if (!selection) return;
+    const sections = [{ ...selection, note: rewriteNote }];
+    if (reviewing && run) resume.mutate({ runId: run.id, payload: { action: "regenerate", sections } });
+    else regenerate.mutate(sections);
+    setSelection(null);
+    setRewriteNote("");
+  };
 
   return (
     <div className="grid gap-6 xl:grid-cols-[1fr_22rem]">
@@ -65,6 +85,10 @@ function Editor({ episode, initialText }: { episode: Episode; initialText: strin
           value={text}
           disabled={locked}
           onChange={(e) => setText(e.target.value)}
+          onSelect={(e) => {
+            const target = e.currentTarget;
+            setSelection(target.selectionEnd > target.selectionStart ? { start: target.selectionStart, end: target.selectionEnd } : null);
+          }}
           placeholder={"Narration is plain text.\nAna: Dialogue starts with a character name and a colon.\n[[scene]] marks a scene break."}
         />
         <div className="flex flex-wrap items-end gap-2">
@@ -76,6 +100,19 @@ function Editor({ episode, initialText }: { episode: Episode; initialText: strin
             {save.isPending ? "Saving…" : "Save version"}
           </Button>
         </div>
+        {selection && (
+          <div className="flex flex-wrap items-end gap-2 rounded-[var(--radius)] border border-border p-3" aria-label="Rewrite selection">
+            <div className="flex min-w-60 flex-1 flex-col gap-1.5">
+              <Label htmlFor="rewrite-note">Rewrite the selected passage ({selection.end - selection.start} characters)</Label>
+              <Input id="rewrite-note" placeholder="What should change?" value={rewriteNote} onChange={(e) => setRewriteNote(e.target.value)} />
+            </div>
+            <Button variant="outline" disabled={!canRewrite || resume.isPending || regenerate.isPending} onClick={requestRewrite}>
+              Regenerate selection
+            </Button>
+            {dirty && <p className="w-full text-xs text-muted-foreground">Save your changes first; rewrites apply to the saved version.</p>}
+          </div>
+        )}
+        <FormError message={rewriteError ? errorMessage(rewriteError) : null} />
         {locked && <p className="text-sm text-muted-foreground">This episode is in review and cannot be edited right now.</p>}
         {conflict ? (
           <div role="alert" className="text-sm text-destructive">

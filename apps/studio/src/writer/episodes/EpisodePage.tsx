@@ -3,6 +3,7 @@ import { QueryState } from "@/components/QueryState";
 import { StatusBadge } from "@/components/StatusBadge";
 import { TabNav } from "@/components/TabNav";
 import { AiTab } from "./AiTab";
+import { DraftingPanel } from "./DraftingPanel";
 import { EditorTab } from "./EditorTab";
 import { HistoryTab } from "./HistoryTab";
 import { PlanTab } from "./PlanTab";
@@ -25,6 +26,7 @@ export function EpisodePage({ seriesId }: { seriesId: string }) {
             </h2>
             <StatusBadge status={episode.status} />
           </div>
+          <DraftingPanel episode={episode} />
           <TabNav
             label="Episode sections"
             items={[

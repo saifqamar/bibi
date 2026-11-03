@@ -603,6 +603,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/studio/episodes/{episode_id}/regenerate-section": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Regenerate Section */
+        post: operations["regenerate_section_api_v1_studio_episodes__episode_id__regenerate_section_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/studio/episodes/{episode_id}/script": {
         parameters: {
             query?: never;
@@ -648,6 +665,23 @@ export interface paths {
         get: operations["list_runs_api_v1_studio_episodes__episode_id__workflow_runs_get"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/studio/episodes/{episode_id}/workflows/drafting": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Start Drafting */
+        post: operations["start_drafting_api_v1_studio_episodes__episode_id__workflows_drafting_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1032,6 +1066,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/studio/workflow-runs/{run_id}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cancel Run */
+        post: operations["cancel_run_api_v1_studio_workflow_runs__run_id__cancel_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/studio/workflow-runs/{run_id}/events": {
         parameters: {
             query?: never;
@@ -1047,6 +1098,23 @@ export interface paths {
         get: operations["stream_run_events_api_v1_studio_workflow_runs__run_id__events_get"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/studio/workflow-runs/{run_id}/resume": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Resume Run */
+        post: operations["resume_run_api_v1_studio_workflow_runs__run_id__resume_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1793,6 +1861,11 @@ export interface components {
             /** Refresh Token */
             refresh_token: string;
         };
+        /** RegenerateIn */
+        RegenerateIn: {
+            /** Sections */
+            sections: components["schemas"]["Section"][];
+        };
         /** RelationshipCreate */
         RelationshipCreate: {
             /**
@@ -1862,6 +1935,17 @@ export interface components {
             from_episode?: number | null;
         };
         /**
+         * ResumeIn
+         * @description Answer for the step the run is waiting at, e.g. ``{"action": "approve"}``, or empty to
+         *     retry a failed run.
+         */
+        ResumeIn: {
+            /** Payload */
+            payload?: {
+                [key: string]: unknown;
+            } | null;
+        };
+        /**
          * Role
          * @enum {string}
          */
@@ -1927,6 +2011,18 @@ export interface components {
             text: string;
             /** Unknown Speaker */
             unknown_speaker: string | null;
+        };
+        /** Section */
+        Section: {
+            /** End */
+            end: number;
+            /**
+             * Note
+             * @default
+             */
+            note: string;
+            /** Start */
+            start: number;
         };
         /** SeriesCostOut */
         SeriesCostOut: {
@@ -3604,6 +3700,41 @@ export interface operations {
             };
         };
     };
+    regenerate_section_api_v1_studio_episodes__episode_id__regenerate_section_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                episode_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RegenerateIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RunOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     get_script_api_v1_studio_episodes__episode_id__script_get: {
         parameters: {
             query?: never;
@@ -3688,6 +3819,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["RunOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    start_drafting_api_v1_studio_episodes__episode_id__workflows_drafting_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                episode_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RunOut"];
                 };
             };
             /** @description Validation Error */
@@ -5110,6 +5272,37 @@ export interface operations {
             };
         };
     };
+    cancel_run_api_v1_studio_workflow_runs__run_id__cancel_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                run_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RunOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     stream_run_events_api_v1_studio_workflow_runs__run_id__events_get: {
         parameters: {
             query?: {
@@ -5133,6 +5326,41 @@ export interface operations {
                 };
                 content: {
                     "text/event-stream": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    resume_run_api_v1_studio_workflow_runs__run_id__resume_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                run_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ResumeIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RunOut"];
                 };
             };
             /** @description Validation Error */

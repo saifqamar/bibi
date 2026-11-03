@@ -7,6 +7,7 @@ from typing import Any
 
 from fastapi import APIRouter, Depends, Header, Query, Request
 from fastapi.responses import StreamingResponse
+from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
 from app.modules.ai.costs import CostService
@@ -20,10 +21,12 @@ from app.modules.ai.schemas import (
     RunOut,
     SeriesCostOut,
 )
+from app.modules.ai.service import AIService, Section
 from app.modules.catalog import CatalogService
 from app.modules.identity import CurrentUser, require_admin, require_studio
 from app.modules.writing import EpisodeService
 from app.shared.db import get_db
+from app.shared.ratelimit import rate_limit
 
 studio_router = APIRouter(prefix="/studio", tags=["studio: ai runs and costs"])
 admin_router = APIRouter(prefix="/admin", tags=["admin: costs"])
@@ -134,6 +137,81 @@ def stream_run_events(
         media_type="text/event-stream",
         headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
     )
+
+
+_ai_limit = rate_limit("ai-workflows", limit=30, window_seconds=60)
+
+
+def get_ai_service(request: Request, db: Session = Depends(get_db)) -> AIService:
+    return AIService(db, request.app.state.container)
+
+
+class ResumeIn(BaseModel):
+    """Answer for the step the run is waiting at, e.g. ``{"action": "approve"}``, or empty to
+    retry a failed run."""
+
+    payload: dict[str, Any] | None = None
+
+
+class RegenerateIn(BaseModel):
+    sections: list[Section] = Field(min_length=1, max_length=20)
+
+
+@studio_router.post(
+    "/episodes/{episode_id}/workflows/drafting",
+    response_model=RunOut,
+    status_code=202,
+    dependencies=[Depends(_ai_limit)],
+)
+def start_drafting(
+    episode_id: uuid.UUID,
+    user: CurrentUser = Depends(require_studio),
+    service: AIService = Depends(get_ai_service),
+    costs: CostService = Depends(get_cost_service),
+) -> RunOut:
+    return run_out(service.start_drafting(user, episode_id), costs)
+
+
+@studio_router.post(
+    "/episodes/{episode_id}/regenerate-section",
+    response_model=RunOut,
+    status_code=202,
+    dependencies=[Depends(_ai_limit)],
+)
+def regenerate_section(
+    episode_id: uuid.UUID,
+    body: RegenerateIn,
+    user: CurrentUser = Depends(require_studio),
+    service: AIService = Depends(get_ai_service),
+    costs: CostService = Depends(get_cost_service),
+) -> RunOut:
+    return run_out(service.regenerate_section(user, episode_id, body.sections), costs)
+
+
+@studio_router.post(
+    "/workflow-runs/{run_id}/resume",
+    response_model=RunOut,
+    status_code=202,
+    dependencies=[Depends(_ai_limit)],
+)
+def resume_run(
+    run_id: uuid.UUID,
+    body: ResumeIn,
+    user: CurrentUser = Depends(require_studio),
+    service: AIService = Depends(get_ai_service),
+    costs: CostService = Depends(get_cost_service),
+) -> RunOut:
+    return run_out(service.resume(user, run_id, body.payload), costs)
+
+
+@studio_router.post("/workflow-runs/{run_id}/cancel", response_model=RunOut)
+def cancel_run(
+    run_id: uuid.UUID,
+    user: CurrentUser = Depends(require_studio),
+    service: AIService = Depends(get_ai_service),
+    costs: CostService = Depends(get_cost_service),
+) -> RunOut:
+    return run_out(service.cancel(user, run_id), costs)
 
 
 @studio_router.get("/episodes/{episode_id}/costs", response_model=CostSummary)

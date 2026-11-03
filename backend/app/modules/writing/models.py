@@ -3,6 +3,7 @@ from datetime import datetime
 from enum import StrEnum
 from typing import Any
 
+from pgvector.sqlalchemy import Vector
 from sqlalchemy import (
     Boolean,
     CheckConstraint,
@@ -19,6 +20,10 @@ from sqlalchemy.dialects.postgresql import ARRAY, JSONB
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.shared.db import Base, TimestampMixin, UUIDPrimaryKey
+
+# Matches the embedding port's dimension (app.modules.ai.EMBEDDING_DIM); kept here as a literal
+# so the writing module's schema does not depend on the ai module.
+EMBEDDING_DIM = 1536
 
 
 def _enum(enum_cls: type[StrEnum], name: str) -> Enum:
@@ -201,3 +206,17 @@ class EpisodeDraft(UUIDPrimaryKey, TimestampMixin, Base):
         ForeignKey("users.id", ondelete="SET NULL"), nullable=True
     )
     note: Mapped[str] = mapped_column(String(500), default="")
+
+
+class EpisodeSummary(UUIDPrimaryKey, TimestampMixin, Base):
+    """Summary of an episode's approved text, embedded for retrieval while drafting later ones."""
+
+    __tablename__ = "episode_summaries"
+
+    episode_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("episodes.id", ondelete="CASCADE"), unique=True
+    )
+    series_id: Mapped[uuid.UUID] = _series_fk()
+    draft_version: Mapped[int] = mapped_column(Integer)
+    summary: Mapped[str] = mapped_column(Text)
+    embedding: Mapped[list[float]] = mapped_column(Vector(EMBEDDING_DIM))
