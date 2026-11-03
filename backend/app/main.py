@@ -12,6 +12,7 @@ from app.modules.audio.api.routes import routers as audio_routers
 from app.modules.catalog.api.routes import routers as catalog_routers
 from app.modules.identity.api.routes import routers as identity_routers
 from app.modules.listening.api.routes import routers as listening_routers
+from app.modules.website.api.routes import routers as website_routers
 from app.modules.writing.api.routes import routers as writing_routers
 from app.shared import media
 from app.shared.config import Settings, get_settings
@@ -58,6 +59,7 @@ def create_app(settings: Settings | None = None, container: Container | None = N
         *admin_routers,
         *listening_routers,
         *analytics_routers,
+        *website_routers,
     ]:
         api.include_router(router)
 
