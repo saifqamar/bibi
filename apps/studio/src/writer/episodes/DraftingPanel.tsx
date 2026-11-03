@@ -145,7 +145,13 @@ export function DraftingPanel({ episode }: { episode: Episode }) {
       {active && interrupt?.kind === "contradictions" && (
         <div className="flex flex-col gap-3 text-sm">
           <p className="font-medium">The continuity check found contradictions</p>
-          <p className="text-muted-foreground">Fix the text or update the canon, then continue. The check runs again.</p>
+          <p className="text-muted-foreground">
+            Review them in the{" "}
+            <Link className="text-primary underline" to={`${base}/episodes/${episode.id}/continuity`}>
+              Continuity
+            </Link>{" "}
+            tab: fix the text, update the canon, or mark them intentional. Then continue; the check runs again.
+          </p>
           <div>
             <Button disabled={resume.isPending} onClick={() => resume.mutate({ runId: active.id, payload: { action: "resolved" } })}>
               I have resolved them

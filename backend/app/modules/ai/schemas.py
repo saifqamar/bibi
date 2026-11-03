@@ -1,7 +1,7 @@
 import uuid
 from datetime import date, datetime
 from decimal import Decimal
-from typing import Any
+from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -80,3 +80,37 @@ class AdminCostsOut(BaseModel):
 
 class BudgetIn(BaseModel):
     soft_limit_usd: Decimal | None = Field(default=None, ge=0, le=1_000_000)
+
+
+class IssueOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: uuid.UUID
+    episode_id: uuid.UUID
+    workflow_run_id: uuid.UUID | None
+    draft_version: int
+    severity: str
+    type: str
+    description: str
+    quote: str
+    source_ref: dict[str, Any]
+    status: str
+    resolution_note: str
+    resolved_at: datetime | None
+    created_at: datetime
+
+
+class ResolveIssueIn(BaseModel):
+    status: Literal["fixed", "intentional"]
+    note: str = Field(default="", max_length=2000)
+
+
+class IssueCanonIn(BaseModel):
+    """Turn an issue into a canon change proposal the writer then accepts or rejects."""
+
+    entity_type: Literal[
+        "characters", "relationships", "locations", "world-rules", "timeline", "plot-threads"
+    ]
+    op: Literal["create", "update", "delete"]
+    entity_id: uuid.UUID | None = None
+    payload: dict[str, Any] = Field(default_factory=dict)

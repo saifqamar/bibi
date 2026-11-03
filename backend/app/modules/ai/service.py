@@ -123,6 +123,15 @@ class AIService:
         self._enqueue(run)
         return run
 
+    def start_continuity(self, user: CurrentUser, episode_id: uuid.UUID) -> WorkflowRun:
+        episode = self.episodes.get_for_user(user, episode_id)
+        version, _ = self.episodes.current_text(episode_id)
+        if version is None:
+            raise Conflict("Write or draft the episode first", code="episode_has_no_text")
+        run = self._create_run("continuity", episode.id, episode.series_id, user)
+        self._enqueue(run)
+        return run
+
     def regenerate_section(
         self, user: CurrentUser, episode_id: uuid.UUID, sections: list[Section]
     ) -> WorkflowRun:

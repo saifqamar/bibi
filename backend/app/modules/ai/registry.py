@@ -4,6 +4,7 @@ from collections.abc import Callable
 from typing import Any
 
 from app.modules.ai.engine import Deps
+from app.modules.ai.graphs.continuity.graph import build_continuity_graph
 from app.modules.ai.graphs.drafting.graph import build_drafting_graph, build_section_regen_graph
 
 GraphBuilder = Callable[[Deps, Any], Any]
@@ -11,6 +12,7 @@ GraphBuilder = Callable[[Deps, Any], Any]
 WORKFLOWS: dict[str, GraphBuilder] = {
     "drafting": build_drafting_graph,
     "section_regen": build_section_regen_graph,
+    "continuity": build_continuity_graph,
 }
 
 

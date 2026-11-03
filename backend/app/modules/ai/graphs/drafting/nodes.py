@@ -152,11 +152,6 @@ def apply_section_rewrites(deps: Deps, state: dict[str, Any]) -> dict[str, Any]:
     return {"draft_version": saved.version, "sections": None}
 
 
-def continuity(deps: Deps, state: dict[str, Any]) -> dict[str, Any]:
-    """Continuity check placeholder until plan 06 plugs in the continuity graph."""
-    return {"open_errors": 0}
-
-
 def resolve_contradictions(deps: Deps, state: dict[str, Any]) -> dict[str, Any]:
     interrupt({"kind": "contradictions", "draft_version": state.get("draft_version")})
     return {}

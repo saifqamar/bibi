@@ -481,6 +481,43 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/studio/continuity-issues/{issue_id}/propose-canon": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Propose Canon From Issue
+         * @description Creates a pending canon proposal; the issue stays open until the next check.
+         */
+        post: operations["propose_canon_from_issue_api_v1_studio_continuity_issues__issue_id__propose_canon_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/studio/continuity-issues/{issue_id}/resolve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Resolve Issue */
+        post: operations["resolve_issue_api_v1_studio_continuity_issues__issue_id__resolve_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/studio/episodes/{episode_id}": {
         parameters: {
             query?: never;
@@ -495,6 +532,23 @@ export interface paths {
         post?: never;
         /** Delete Episode */
         delete: operations["delete_episode_api_v1_studio_episodes__episode_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/studio/episodes/{episode_id}/continuity-issues": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Issues */
+        get: operations["list_issues_api_v1_studio_episodes__episode_id__continuity_issues_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -665,6 +719,23 @@ export interface paths {
         get: operations["list_runs_api_v1_studio_episodes__episode_id__workflow_runs_get"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/studio/episodes/{episode_id}/workflows/continuity": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Start Continuity */
+        post: operations["start_continuity_api_v1_studio_episodes__episode_id__workflows_continuity_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1551,6 +1622,73 @@ export interface components {
             status: string;
         };
         /**
+         * IssueCanonIn
+         * @description Turn an issue into a canon change proposal the writer then accepts or rejects.
+         */
+        IssueCanonIn: {
+            /** Entity Id */
+            entity_id?: string | null;
+            /**
+             * Entity Type
+             * @enum {string}
+             */
+            entity_type: "characters" | "relationships" | "locations" | "world-rules" | "timeline" | "plot-threads";
+            /**
+             * Op
+             * @enum {string}
+             */
+            op: "create" | "update" | "delete";
+            /** Payload */
+            payload?: {
+                [key: string]: unknown;
+            };
+        };
+        /** IssueOut */
+        IssueOut: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Description */
+            description: string;
+            /** Draft Version */
+            draft_version: number;
+            /**
+             * Episode Id
+             * Format: uuid
+             */
+            episode_id: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Quote */
+            quote: string;
+            /** Resolution Note */
+            resolution_note: string;
+            /** Resolved At */
+            resolved_at: string | null;
+            /** Severity */
+            severity: string;
+            /** Source Ref */
+            source_ref: {
+                [key: string]: unknown;
+            };
+            /** Status */
+            status: string;
+            /** Type */
+            type: string;
+            /** Workflow Run Id */
+            workflow_run_id: string | null;
+        };
+        /**
+         * IssueStatus
+         * @enum {string}
+         */
+        IssueStatus: "open" | "fixed" | "intentional";
+        /**
          * ListenerSeriesOut
          * @description Listener view of a published series. Always carries the AI-assisted label.
          */
@@ -1933,6 +2071,19 @@ export interface components {
             description?: string | null;
             /** From Episode */
             from_episode?: number | null;
+        };
+        /** ResolveIssueIn */
+        ResolveIssueIn: {
+            /**
+             * Note
+             * @default
+             */
+            note: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "fixed" | "intentional";
         };
         /**
          * ResumeIn
@@ -3375,6 +3526,78 @@ export interface operations {
             };
         };
     };
+    propose_canon_from_issue_api_v1_studio_continuity_issues__issue_id__propose_canon_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                issue_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["IssueCanonIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: string;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    resolve_issue_api_v1_studio_continuity_issues__issue_id__resolve_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                issue_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ResolveIssueIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IssueOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     get_episode_api_v1_studio_episodes__episode_id__get: {
         parameters: {
             query?: never;
@@ -3458,6 +3681,39 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_issues_api_v1_studio_episodes__episode_id__continuity_issues_get: {
+        parameters: {
+            query?: {
+                status?: components["schemas"]["IssueStatus"] | null;
+            };
+            header?: never;
+            path: {
+                episode_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IssueOut"][];
+                };
             };
             /** @description Validation Error */
             422: {
@@ -3819,6 +4075,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["RunOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    start_continuity_api_v1_studio_episodes__episode_id__workflows_continuity_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                episode_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RunOut"];
                 };
             };
             /** @description Validation Error */

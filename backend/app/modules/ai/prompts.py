@@ -141,3 +141,93 @@ past tense."""
 
 def summary_user_prompt(*, episode_number: int, text: str) -> str:
     return f'<episode number="{episode_number}">\n{text}\n</episode>'
+
+
+CONTINUITY_VERSION = "continuity-v1"
+
+CONTINUITY_SYSTEM = """You are the continuity editor of a serialized audio drama. Compare a new
+episode with the story bible (canon), summaries of earlier episodes and passages from them.
+Report only real contradictions or continuity problems, such as:
+- character_fact: a character acts against an established fact (dead, absent, injured, traits,
+  relationships, knowledge they cannot have yet)
+- timeline: events out of order or impossible story time
+- world_rule: a world rule is broken
+- plot_thread: a resolved thread treated as open, or an open thread contradicted
+- naming: a name or speaker spelled inconsistently
+
+Use severity "error" for contradictions listeners would notice, "warning" for doubtful cases.
+The quote must be copied exactly from the new episode. Cite the conflicting source. If there are
+no problems, return an empty list."""
+
+CONTINUITY_SCHEMA: dict[str, Any] = {
+    "type": "object",
+    "properties": {
+        "issues": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "severity": {"type": "string", "enum": ["error", "warning"]},
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "character_fact",
+                            "timeline",
+                            "world_rule",
+                            "plot_thread",
+                            "naming",
+                        ],
+                    },
+                    "description": {"type": "string"},
+                    "quote": {"type": "string"},
+                    "source": {
+                        "type": "object",
+                        "properties": {
+                            "kind": {"type": "string", "enum": ["bible", "episode"]},
+                            "entity_type": {"type": ["string", "null"]},
+                            "entity_id": {"type": ["string", "null"]},
+                            "episode_number": {"type": ["integer", "null"]},
+                            "excerpt": {"type": ["string", "null"]},
+                        },
+                        "required": [
+                            "kind",
+                            "entity_type",
+                            "entity_id",
+                            "episode_number",
+                            "excerpt",
+                        ],
+                        "additionalProperties": False,
+                    },
+                },
+                "required": ["severity", "type", "description", "quote", "source"],
+                "additionalProperties": False,
+            },
+        }
+    },
+    "required": ["issues"],
+    "additionalProperties": False,
+}
+
+
+def continuity_user_prompt(
+    *,
+    bible: dict[str, Any],
+    summaries: list[dict[str, Any]],
+    passages: list[dict[str, Any]],
+    episode_number: int,
+    text: str,
+) -> str:
+    summary_text = (
+        "\n".join(f"Episode {s['number']}: {s['summary']}" for s in summaries) or "None yet."
+    )
+    passage_text = "\n".join(f"[episode {p['number']}] {p['text']}" for p in passages) or "None."
+    return f"""<story_bible>{_json(bible)}</story_bible>
+<earlier_summaries>
+{summary_text}
+</earlier_summaries>
+<earlier_passages>
+{passage_text}
+</earlier_passages>
+<new_episode number="{episode_number}">
+{text}
+</new_episode>"""
