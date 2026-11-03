@@ -8,6 +8,7 @@ from dataclasses import dataclass
 
 from fastapi import Request
 
+from app.modules.identity.ports import DisabledSocialAuth, FakeSocialAuth, SocialAuthPort
 from app.shared.config import Settings
 from app.shared.db import Database
 from app.shared.email import ConsoleEmail, EmailPort, FakeEmail, SmtpEmail
@@ -24,6 +25,7 @@ class Container:
     email: EmailPort
     queue: JobQueuePort
     rate_limiter: RateLimiterPort
+    social_auth: SocialAuthPort
 
 
 def _build_storage(settings: Settings) -> StoragePort:
@@ -72,6 +74,9 @@ def build_container(settings: Settings) -> Container:
         queue=_build_queue(settings),
         rate_limiter=(
             RedisRateLimiter(settings.redis_url) if settings.redis_url else InMemoryRateLimiter()
+        ),
+        social_auth=(
+            FakeSocialAuth() if settings.social_auth_backend == "fake" else DisabledSocialAuth()
         ),
     )
     if isinstance(container.queue, InMemoryJobQueue):

@@ -22,4 +22,12 @@ Records every deviation from `BIBI_SPEC.md` / `spec_docs/`, every `[CHECK]` item
 | LangGraph interrupts + Postgres checkpointer | langgraph 1.2.x: `langgraph.types.interrupt()` inside a node, resume with `Command(resume=...)`, `PostgresSaver.from_conn_string(...).setup()`. Verified with a local run (3 Nov 2026). |
 
 ## Defaults taken for [OPEN] items (confirm with owner)
-See `spec_docs/plans/README.md` and each plan's review table.
+See `spec_docs/plans/README.md` and each plan's review table. Additional choices made while implementing:
+
+| Plan | Item | Default |
+| ---- | ---- | ------- |
+| 01 | Social login providers | Port and endpoint built; disabled until providers are chosen (`BIBI_SOCIAL_AUTH_BACKEND`). A verified social email links to an existing password account with the same email. |
+| 01 | Email verification | Not required (spec default). |
+| 01 | Invite for an email that already has a listener account | Rejected with `email_in_use`; the admin decides how to proceed. |
+| 01 | Refresh token reuse | Treated as theft: all of that user's sessions are revoked. |
+| 01 | Self-service account deletion | Listeners only; writer and admin accounts are deactivated by an admin instead. |

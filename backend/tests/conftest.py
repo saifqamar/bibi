@@ -4,7 +4,8 @@ Set ``TEST_DATABASE_URL`` to point at a disposable database (its ``public`` sche
 """
 
 import os
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator
+from typing import Any
 
 import pytest
 from alembic import command
@@ -16,8 +17,10 @@ from sqlalchemy.orm import Session
 
 from app.container import Container, build_container
 from app.main import create_app
+from app.modules.identity.models import Role
 from app.shared.config import Settings
 from app.shared.db import Database
+from tests.factories import TestUser, make_user
 
 TEST_DATABASE_URL = os.environ.get(
     "TEST_DATABASE_URL", "postgresql+psycopg://postgres:postgres@localhost:5432/bibi_test"
@@ -36,6 +39,7 @@ def make_settings(**overrides: object) -> Settings:
         "queue_backend": "memory",
         "public_base_url": "http://testserver",
         "log_level": "WARNING",
+        "social_auth_backend": "fake",
     }
     values.update(overrides)
     return Settings(**values)  # type: ignore[arg-type]
@@ -102,3 +106,13 @@ def db(container: Container) -> Iterator[Session]:
     finally:
         session.rollback()
         session.close()
+
+
+@pytest.fixture
+def make(db: Session, container: Container) -> Callable[..., TestUser]:
+    """``make(Role.WRITER)`` creates a user and returns it with auth headers."""
+
+    def _make(role: Role = Role.LISTENER, **kwargs: Any) -> TestUser:
+        return make_user(db, container, role, **kwargs)
+
+    return _make

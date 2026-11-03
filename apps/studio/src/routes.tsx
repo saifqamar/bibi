@@ -3,6 +3,7 @@ import { Navigate, type RouteObject } from "react-router";
 import { RequireRole } from "@/auth/RequireRole";
 import { homeForRole, useAuth } from "@/auth/store";
 import { AppLayout } from "@/layouts/AppLayout";
+import { AcceptInvitePage } from "@/pages/AcceptInvitePage";
 import { LoginPage } from "@/pages/LoginPage";
 import { NotAllowedPage } from "@/pages/NotAllowedPage";
 import { NotFoundPage } from "@/pages/NotFoundPage";
@@ -22,6 +23,7 @@ function Loading() {
 export const routes: RouteObject[] = [
   { path: "/", element: <HomeRedirect /> },
   { path: "/login", element: <LoginPage /> },
+  { path: "/accept-invite", element: <AcceptInvitePage /> },
   { path: "/not-allowed", element: <NotAllowedPage /> },
   {
     element: (

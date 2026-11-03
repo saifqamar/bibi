@@ -1,4 +1,5 @@
 import { NavLink, Outlet, useNavigate } from "react-router";
+import { api } from "@/api";
 import { useAuth } from "@/auth/store";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -50,6 +51,9 @@ export function AppLayout() {
             variant="outline"
             size="sm"
             onClick={() => {
+              const refreshToken = useAuth.getState().refreshToken;
+              // Revoke the session server-side; sign out locally even if that fails.
+              if (refreshToken) void api.POST("/api/v1/auth/logout", { body: { refresh_token: refreshToken } }).catch(() => {});
               clear();
               navigate("/login");
             }}

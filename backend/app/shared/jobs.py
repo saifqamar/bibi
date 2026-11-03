@@ -11,10 +11,7 @@ import threading
 import uuid
 from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Any, Protocol
-
-if TYPE_CHECKING:
-    from app.container import Container
+from typing import Any, Protocol
 
 QUEUE_DEFAULT = "bibi:default"
 QUEUE_DRAFTING = "bibi:drafting"
@@ -61,7 +58,8 @@ class QueuedJob:
 class InMemoryJobQueue:
     def __init__(self) -> None:
         self.jobs: list[QueuedJob] = []
-        self.container: Container | None = None
+        # The app container; typed loosely because shared code must not depend on app wiring.
+        self.container: Any = None
 
     def enqueue(self, name: str, **kwargs: Any) -> str:
         spec = JOB_REGISTRY.get(name)
