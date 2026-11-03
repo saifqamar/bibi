@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app import job_modules  # noqa: F401  (registers background jobs)
 from app.container import Container, build_container
+from app.modules.ai.api.routes import routers as ai_routers
 from app.modules.catalog.api.routes import routers as catalog_routers
 from app.modules.identity.api.routes import routers as identity_routers
 from app.modules.writing.api.routes import routers as writing_routers
@@ -13,11 +14,13 @@ from app.shared.config import Settings, get_settings
 from app.shared.errors import install_error_handlers
 from app.shared.logging import configure_logging
 from app.shared.middleware import RequestIdMiddleware
+from app.shared.monitoring import init_sentry
 
 
 def create_app(settings: Settings | None = None, container: Container | None = None) -> FastAPI:
     settings = container.settings if container else (settings or get_settings())
     configure_logging(settings.log_level)
+    init_sentry(settings, component="api")
     app = FastAPI(title=f"{settings.app_name} API", version="0.1.0")
     app.state.settings = settings
     app.state.container = container or build_container(settings)
@@ -39,7 +42,7 @@ def create_app(settings: Settings | None = None, container: Container | None = N
     def health() -> dict[str, str]:
         return {"status": "ok"}
 
-    for router in [*identity_routers, *catalog_routers, *writing_routers]:
+    for router in [*identity_routers, *catalog_routers, *writing_routers, *ai_routers]:
         api.include_router(router)
 
     app.include_router(api)

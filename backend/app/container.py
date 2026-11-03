@@ -4,10 +4,15 @@ Modules receive the container through ``get_container`` and never construct vend
 themselves. Tests build a container with fake adapters.
 """
 
-from dataclasses import dataclass
+import time
+from collections.abc import Callable
+from dataclasses import dataclass, field
 
 from fastapi import Request
 
+from app.modules.ai.adapters.fakes import FakeEmbedding, FakeLLM, FakeTTS
+from app.modules.ai.adapters.ports import EmbeddingPort, LLMPort, TTSPort
+from app.modules.ai.tracing import LoggingTracer, NoopTracer, TracerPort
 from app.modules.identity.ports import DisabledSocialAuth, FakeSocialAuth, SocialAuthPort
 from app.shared.config import Settings
 from app.shared.db import Database
@@ -26,6 +31,11 @@ class Container:
     queue: JobQueuePort
     rate_limiter: RateLimiterPort
     social_auth: SocialAuthPort
+    llm: LLMPort
+    embedding: EmbeddingPort
+    tts: TTSPort
+    tracer: TracerPort
+    retry_sleep: Callable[[float], None] = field(default=time.sleep)
 
 
 def _build_storage(settings: Settings) -> StoragePort:
@@ -65,6 +75,21 @@ def _build_queue(settings: Settings) -> JobQueuePort:
     return InMemoryJobQueue()
 
 
+def _build_llm(settings: Settings) -> LLMPort:
+    if settings.llm_backend == "anthropic":
+        # Imported here so the SDK is only loaded when Claude is the configured provider.
+        from app.modules.ai.adapters.anthropic_llm import AnthropicLLM
+
+        return AnthropicLLM(
+            model=settings.llm_model,
+            effort=settings.llm_effort,
+            api_key=settings.anthropic_api_key,
+            timeout_seconds=settings.llm_timeout_seconds,
+            use_fallbacks=settings.llm_fallbacks,
+        )
+    return FakeLLM()
+
+
 def build_container(settings: Settings) -> Container:
     container = Container(
         settings=settings,
@@ -78,6 +103,10 @@ def build_container(settings: Settings) -> Container:
         social_auth=(
             FakeSocialAuth() if settings.social_auth_backend == "fake" else DisabledSocialAuth()
         ),
+        llm=_build_llm(settings),
+        embedding=FakeEmbedding(),
+        tts=FakeTTS(),
+        tracer=NoopTracer() if settings.tracing_backend == "noop" else LoggingTracer(),
     )
     if isinstance(container.queue, InMemoryJobQueue):
         container.queue.container = container

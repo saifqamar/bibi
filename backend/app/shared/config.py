@@ -41,6 +41,20 @@ class Settings(BaseSettings):
 
     queue_backend: str = "memory"  # arq | memory
 
+    # AI providers ([OPEN] in the spec; fakes need no keys)
+    llm_backend: str = "fake"  # fake | anthropic
+    llm_model: str = "claude-opus-5-5"
+    llm_effort: str = "high"  # low | medium | high | xhigh | max
+    llm_fallbacks: bool = True  # server-side refusal fallback
+    llm_timeout_seconds: float = 600.0
+    anthropic_api_key: str | None = None  # falls back to ANTHROPIC_API_KEY / SDK credentials
+    embedding_backend: str = "fake"  # fake (provider [OPEN])
+    tts_backend: str = "fake"  # fake (provider [OPEN])
+    tracing_backend: str = "logging"  # logging | noop
+
+    sentry_dsn: str | None = None
+    sentry_traces_sample_rate: float = 0.0
+
     @model_validator(mode="after")
     def _require_real_secret_in_production(self) -> "Settings":
         if self.env == "production" and self.secret_key == INSECURE_DEV_SECRET:

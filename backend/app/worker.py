@@ -20,6 +20,7 @@ from app.shared.jobs import (
     JobSpec,
 )
 from app.shared.logging import configure_logging
+from app.shared.monitoring import init_sentry
 
 
 def _wrap(spec: JobSpec) -> Function:
@@ -32,6 +33,7 @@ def _wrap(spec: JobSpec) -> Function:
 async def _startup(ctx: dict[str, Any]) -> None:
     settings = get_settings()
     configure_logging(settings.log_level)
+    init_sentry(settings, component="worker")
     ctx["container"] = build_container(settings)
 
 

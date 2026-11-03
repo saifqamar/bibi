@@ -270,3 +270,15 @@ source_modules =
     app.shared
 forbidden_modules =
     app.modules
+
+[importlinter:contract:vendor-sdks-only-in-adapters]
+name = Vendor SDKs are imported only by their adapter
+type = forbidden
+source_modules =
+    app
+forbidden_modules =
+    anthropic
+    sentry_sdk
+ignore_imports =
+    app.modules.ai.adapters.anthropic_llm -> anthropic
+    app.shared.monitoring -> sentry_sdk
