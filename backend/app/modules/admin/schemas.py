@@ -59,3 +59,24 @@ class NotificationOut(BaseModel):
 class NotificationsOut(BaseModel):
     items: list[NotificationOut]
     unread: int
+
+
+class AuditEntryOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: uuid.UUID
+    actor_id: uuid.UUID | None
+    action: str
+    entity_type: str
+    entity_id: str | None
+    meta: dict[str, Any] = Field(serialization_alias="metadata")
+    created_at: datetime
+
+
+class EpisodeAccessIn(BaseModel):
+    is_free: bool | None = Field(description="null follows the series' free episode count")
+
+
+class EpisodeAccessOut(BaseModel):
+    episode_id: uuid.UUID
+    is_free: bool | None

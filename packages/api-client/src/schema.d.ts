@@ -1,5 +1,22 @@
 // Generated from the backend OpenAPI schema. Do not edit; run `pnpm api-client:generate`.
 export interface paths {
+    "/api/v1/admin/audit-log": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Audit Log */
+        get: operations["audit_log_api_v1_admin_audit_log_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/costs": {
         parameters: {
             query?: never;
@@ -10,6 +27,23 @@ export interface paths {
         /** Admin Costs */
         get: operations["admin_costs_api_v1_admin_costs_get"];
         put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/episodes/{episode_id}/access": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Set Episode Access */
+        put: operations["set_episode_access_api_v1_admin_episodes__episode_id__access_put"];
         post?: never;
         delete?: never;
         options?: never;
@@ -355,6 +389,23 @@ export interface paths {
         get?: never;
         /** Admin Update Voice */
         put: operations["admin_update_voice_api_v1_admin_voices__voice_id__put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/writer-series-counts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Writer Series Counts */
+        get: operations["writer_series_counts_api_v1_admin_writer_series_counts_get"];
+        put?: never;
         post?: never;
         delete?: never;
         options?: never;
@@ -1727,6 +1778,31 @@ export interface components {
             /** Voice Id */
             voice_id: string | null;
         };
+        /** AuditEntryOut */
+        AuditEntryOut: {
+            /** Action */
+            action: string;
+            /** Actor Id */
+            actor_id: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Entity Id */
+            entity_id: string | null;
+            /** Entity Type */
+            entity_type: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Metadata */
+            metadata: {
+                [key: string]: unknown;
+            };
+        };
         /** Beat */
         Beat: {
             /** Id */
@@ -1983,6 +2059,24 @@ export interface components {
             version: number;
             /** Word Count */
             word_count: number;
+        };
+        /** EpisodeAccessIn */
+        EpisodeAccessIn: {
+            /**
+             * Is Free
+             * @description null follows the series' free episode count
+             */
+            is_free: boolean | null;
+        };
+        /** EpisodeAccessOut */
+        EpisodeAccessOut: {
+            /**
+             * Episode Id
+             * Format: uuid
+             */
+            episode_id: string;
+            /** Is Free */
+            is_free: boolean | null;
         };
         /** EpisodeAudioOut */
         EpisodeAudioOut: {
@@ -2338,6 +2432,17 @@ export interface components {
             items: components["schemas"]["NotificationOut"][];
             /** Unread */
             unread: number;
+        };
+        /** Page[AuditEntryOut] */
+        Page_AuditEntryOut_: {
+            /** Items */
+            items: components["schemas"]["AuditEntryOut"][];
+            /** Limit */
+            limit: number;
+            /** Offset */
+            offset: number;
+            /** Total */
+            total: number;
         };
         /** Page[InviteOut] */
         Page_InviteOut_: {
@@ -3220,6 +3325,43 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    audit_log_api_v1_admin_audit_log_get: {
+        parameters: {
+            query?: {
+                actor_id?: string | null;
+                entity_type?: string | null;
+                entity_id?: string | null;
+                from?: string | null;
+                to?: string | null;
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_AuditEntryOut_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     admin_costs_api_v1_admin_costs_get: {
         parameters: {
             query?: {
@@ -3240,6 +3382,41 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AdminCostsOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    set_episode_access_api_v1_admin_episodes__episode_id__access_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                episode_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EpisodeAccessIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EpisodeAccessOut"];
                 };
             };
             /** @description Validation Error */
@@ -4046,6 +4223,28 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    writer_series_counts_api_v1_admin_writer_series_counts_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: number;
+                    };
                 };
             };
         };

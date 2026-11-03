@@ -310,6 +310,12 @@ class EpisodeService:
         episode.published_duration_seconds = None
         return episode
 
+    def set_access(self, episode_id: uuid.UUID, is_free: bool | None) -> Episode:
+        """Admin override of free/paid; ``None`` follows the series' free episode count."""
+        episode = self._episode(episode_id)
+        episode.is_free = is_free
+        return episode
+
     def all_for_series(self, series_id: uuid.UUID) -> list[Episode]:
         """Every episode of a series, in order (system read)."""
         return list(
