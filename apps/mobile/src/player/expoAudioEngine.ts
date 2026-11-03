@@ -1,4 +1,9 @@
-import { createAudioPlayer, setAudioModeAsync, type AudioPlayer, type AudioStatus } from "expo-audio";
+import {
+  createAudioPlayer,
+  setAudioModeAsync,
+  type AudioPlayer,
+  type AudioStatus,
+} from "expo-audio";
 import type { EngineStatus, PlayerEngine, Track } from "./engine";
 
 /**
@@ -31,7 +36,10 @@ export class ExpoAudioEngine implements PlayerEngine {
       this.configured = true;
     }
     if (!this.player) {
-      this.player = createAudioPlayer({ uri: track.url }, { updateInterval: 500 });
+      this.player = createAudioPlayer(
+        { uri: track.url },
+        { updateInterval: 500 },
+      );
       this.player.addListener("playbackStatusUpdate", this.emit);
     } else {
       this.player.replace({ uri: track.url });
@@ -39,7 +47,11 @@ export class ExpoAudioEngine implements PlayerEngine {
     if (startAt > 0) await this.player.seekTo(startAt);
     this.player.setActiveForLockScreen(
       true,
-      { title: track.title, artist: track.artist, artworkUrl: track.artworkUrl ?? undefined },
+      {
+        title: track.title,
+        artist: track.artist,
+        artworkUrl: track.artworkUrl ?? undefined,
+      },
       { showSeekBackward: true, showSeekForward: true },
     );
   }

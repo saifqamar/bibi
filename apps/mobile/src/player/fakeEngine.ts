@@ -52,7 +52,12 @@ export class FakeEngine implements PlayerEngine {
   }
 
   private emit(ended: boolean): void {
-    const status = { position: this.position, duration: this.duration, playing: this.playing, ended };
+    const status = {
+      position: this.position,
+      duration: this.duration,
+      playing: this.playing,
+      ended,
+    };
     this.listeners.forEach((listener) => listener(status));
   }
 }

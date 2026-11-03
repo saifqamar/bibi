@@ -1,9 +1,5 @@
 import NetInfo from "@react-native-community/netinfo";
-import {
-  act,
-  renderRouter,
-  screen,
-} from "expo-router/testing-library";
+import { act, renderRouter, screen } from "expo-router/testing-library";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   episode,

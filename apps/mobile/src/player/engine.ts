@@ -35,8 +35,9 @@ export function setEngine(next: PlayerEngine | null): void {
 export function getEngine(): PlayerEngine {
   if (!engine) {
     // Loaded lazily so tests and screens that never play do not touch the native module.
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { ExpoAudioEngine } = require("./expoAudioEngine") as typeof import("./expoAudioEngine");
+    const { ExpoAudioEngine } =
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      require("./expoAudioEngine") as typeof import("./expoAudioEngine");
     engine = new ExpoAudioEngine();
   }
   return engine;
