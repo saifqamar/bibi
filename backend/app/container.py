@@ -12,6 +12,7 @@ from app.shared.config import Settings
 from app.shared.db import Database
 from app.shared.email import ConsoleEmail, EmailPort, FakeEmail, SmtpEmail
 from app.shared.jobs import ArqJobQueue, InMemoryJobQueue, JobQueuePort
+from app.shared.ratelimit import InMemoryRateLimiter, RateLimiterPort, RedisRateLimiter
 from app.shared.storage import InMemoryStorage, LocalStorage, StoragePort
 
 
@@ -22,6 +23,7 @@ class Container:
     storage: StoragePort
     email: EmailPort
     queue: JobQueuePort
+    rate_limiter: RateLimiterPort
 
 
 def _build_storage(settings: Settings) -> StoragePort:
@@ -68,6 +70,9 @@ def build_container(settings: Settings) -> Container:
         storage=_build_storage(settings),
         email=_build_email(settings),
         queue=_build_queue(settings),
+        rate_limiter=(
+            RedisRateLimiter(settings.redis_url) if settings.redis_url else InMemoryRateLimiter()
+        ),
     )
     if isinstance(container.queue, InMemoryJobQueue):
         container.queue.container = container
