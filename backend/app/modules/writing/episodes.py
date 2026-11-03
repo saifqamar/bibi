@@ -266,6 +266,16 @@ class EpisodeService:
         draft = self._current_draft(self._episode(episode_id))
         return (draft.version, draft.text) if draft else (None, "")
 
+    def episodes_before(self, series_id: uuid.UUID, number: int) -> list[Episode]:
+        """Earlier episodes of a series, in order (system read)."""
+        return list(
+            self.db.scalars(
+                select(Episode)
+                .where(Episode.series_id == series_id, Episode.number < number)
+                .order_by(Episode.number)
+            )
+        )
+
     def plan(self, episode_id: uuid.UUID) -> PlanOut:
         plan = self._plan(self._episode(episode_id))
         return PlanOut(beats=[Beat.model_validate(b) for b in plan.beats], notes=plan.notes)
