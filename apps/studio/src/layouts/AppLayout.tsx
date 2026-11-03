@@ -11,7 +11,16 @@ interface NavItem {
 }
 
 const writerNav: NavItem[] = [{ to: "/writer", label: "My series" }];
-const adminNav: NavItem[] = [{ to: "/admin", label: "Review queue" }];
+const adminNav: NavItem[] = [
+  { to: "/admin", label: "Review queue" },
+  { to: "/admin/writers", label: "Writers" },
+  { to: "/admin/series", label: "Series" },
+  { to: "/admin/shelves", label: "Shelves" },
+  { to: "/admin/voices", label: "Voices" },
+  { to: "/admin/costs", label: "AI costs" },
+  { to: "/admin/analytics", label: "Analytics" },
+  { to: "/admin/audit", label: "Audit log" },
+];
 
 function NavSection({ title, items }: { title: string; items: NavItem[] }) {
   return (
