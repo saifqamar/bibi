@@ -36,3 +36,6 @@ See `spec_docs/plans/README.md` and each plan's review table. Additional choices
 | 02 | Empty shelves | Not returned to listeners (a shelf with no published series is skipped). |
 | 02 | Cover URLs | Signed, valid 24 hours; type checked by file signature (JPEG, PNG, WebP), max 5 MB. |
 | 02 | Unarchive | Returns to `published` if the series was ever published, otherwise `draft`. |
+| 03 | Narrator | One character per series can be the narrator; marking another unmarks the previous one. |
+| 03 | Accepting a proposal | The writer may edit the proposed payload before accepting; it is validated like a normal edit. Proposals for deleted entries become `proposal_stale`. |
+| 03 | Bible search | Case-insensitive match on names, titles and descriptions across all sections. |
