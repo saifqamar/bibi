@@ -93,8 +93,14 @@ class RunService:
         error: str | None = None,
         interrupt: dict[str, Any] | None = None,
     ) -> None:
-        if run.status in TERMINAL and status != RunStatus.RUNNING:
+        retrying = run.status == RunStatus.FAILED and status in (
+            RunStatus.QUEUED,
+            RunStatus.RUNNING,
+        )
+        if run.status in TERMINAL and not retrying:
             raise Conflict("This run has finished", code="workflow_finished")
+        if retrying:
+            run.finished_at = None
         run.status = status
         if status == RunStatus.RUNNING and run.started_at is None:
             run.started_at = _now()

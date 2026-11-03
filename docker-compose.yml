@@ -57,6 +57,13 @@ services:
       migrate:
         condition: service_completed_successfully
 
+  worker-drafting:
+    <<: *backend
+    command: ["arq", "app.worker.DraftingWorker"]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
 volumes:
   pgdata:
   storage:
