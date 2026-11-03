@@ -271,6 +271,231 @@
         "title": "AdminShelfOut",
         "type": "object"
       },
+      "AssignmentIn": {
+        "properties": {
+          "character_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "null assigns the narrator voice",
+            "title": "Character Id"
+          },
+          "voice_id": {
+            "format": "uuid",
+            "title": "Voice Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "character_id",
+          "voice_id"
+        ],
+        "title": "AssignmentIn",
+        "type": "object"
+      },
+      "AssignmentsIn": {
+        "properties": {
+          "assignments": {
+            "items": {
+              "$ref": "#/components/schemas/AssignmentIn"
+            },
+            "maxItems": 500,
+            "title": "Assignments",
+            "type": "array"
+          }
+        },
+        "required": [
+          "assignments"
+        ],
+        "title": "AssignmentsIn",
+        "type": "object"
+      },
+      "AssignmentsOut": {
+        "properties": {
+          "cast": {
+            "items": {
+              "$ref": "#/components/schemas/CastMember"
+            },
+            "title": "Cast",
+            "type": "array"
+          }
+        },
+        "required": [
+          "cast"
+        ],
+        "title": "AssignmentsOut",
+        "type": "object"
+      },
+      "AudioAssetOut": {
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "duration_seconds": {
+            "title": "Duration Seconds",
+            "type": "string"
+          },
+          "format": {
+            "title": "Format",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "loudness_lufs": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Loudness Lufs"
+          },
+          "peak_dbfs": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Peak Dbfs"
+          },
+          "url": {
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "url",
+          "format",
+          "duration_seconds",
+          "loudness_lufs",
+          "peak_dbfs",
+          "created_at"
+        ],
+        "title": "AudioAssetOut",
+        "type": "object"
+      },
+      "AudioLineOut": {
+        "properties": {
+          "duration_ms": {
+            "title": "Duration Ms",
+            "type": "integer"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "flag": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Flag"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "position": {
+            "title": "Position",
+            "type": "integer"
+          },
+          "source_line": {
+            "title": "Source Line",
+            "type": "integer"
+          },
+          "speaker": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Speaker"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "text": {
+            "title": "Text",
+            "type": "string"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Url"
+          },
+          "voice_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Voice Id"
+          }
+        },
+        "required": [
+          "id",
+          "position",
+          "kind",
+          "source_line",
+          "speaker",
+          "voice_id",
+          "text",
+          "status",
+          "duration_ms",
+          "flag",
+          "error",
+          "url"
+        ],
+        "title": "AudioLineOut",
+        "type": "object"
+      },
       "Beat": {
         "properties": {
           "id": {
@@ -422,6 +647,50 @@
           "over_budget"
         ],
         "title": "BudgetOut",
+        "type": "object"
+      },
+      "CastMember": {
+        "properties": {
+          "character_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Character Id"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "voice_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Voice Id"
+          },
+          "voice_notes": {
+            "title": "Voice Notes",
+            "type": "string"
+          }
+        },
+        "required": [
+          "character_id",
+          "name",
+          "voice_notes",
+          "voice_id"
+        ],
+        "title": "CastMember",
         "type": "object"
       },
       "CharacterCreate": {
@@ -923,6 +1192,49 @@
         "title": "DraftSummary",
         "type": "object"
       },
+      "EpisodeAudioOut": {
+        "properties": {
+          "asset": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AudioAssetOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "is_current": {
+            "title": "Is Current",
+            "type": "boolean"
+          },
+          "lines": {
+            "items": {
+              "$ref": "#/components/schemas/AudioLineOut"
+            },
+            "title": "Lines",
+            "type": "array"
+          },
+          "render": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RenderOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "render",
+          "asset",
+          "lines",
+          "is_current"
+        ],
+        "title": "EpisodeAudioOut",
+        "type": "object"
+      },
       "EpisodeCost": {
         "properties": {
           "cost_usd": {
@@ -1371,6 +1683,21 @@
         ],
         "title": "IssueStatus",
         "type": "string"
+      },
+      "LineTextIn": {
+        "properties": {
+          "text": {
+            "maxLength": 4000,
+            "minLength": 1,
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "title": "LineTextIn",
+        "type": "object"
       },
       "ListenerSeriesOut": {
         "description": "Listener view of a published series. Always carries the AI-assisted label.",
@@ -2357,6 +2684,71 @@
         "title": "RelationshipUpdate",
         "type": "object"
       },
+      "RenderOut": {
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "draft_version": {
+            "title": "Draft Version",
+            "type": "integer"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "lines_done": {
+            "title": "Lines Done",
+            "type": "integer"
+          },
+          "lines_total": {
+            "title": "Lines Total",
+            "type": "integer"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "workflow_run_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Workflow Run Id"
+          }
+        },
+        "required": [
+          "id",
+          "draft_version",
+          "status",
+          "workflow_run_id",
+          "lines_total",
+          "lines_done",
+          "error",
+          "created_at"
+        ],
+        "title": "RenderOut",
+        "type": "object"
+      },
       "ResolveIssueIn": {
         "properties": {
           "note": {
@@ -2567,6 +2959,10 @@
             "title": "Paragraph",
             "type": "integer"
           },
+          "source_line": {
+            "title": "Source Line",
+            "type": "integer"
+          },
           "speaker": {
             "anyOf": [
               {
@@ -2600,7 +2996,8 @@
           "speaker",
           "text",
           "paragraph",
-          "unknown_speaker"
+          "unknown_speaker",
+          "source_line"
         ],
         "title": "ScriptLineOut",
         "type": "object"
@@ -3069,6 +3466,26 @@
         "title": "SocialLoginIn",
         "type": "object"
       },
+      "StartRenderOut": {
+        "properties": {
+          "render_id": {
+            "format": "uuid",
+            "title": "Render Id",
+            "type": "string"
+          },
+          "workflow_run_id": {
+            "format": "uuid",
+            "title": "Workflow Run Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "render_id",
+          "workflow_run_id"
+        ],
+        "title": "StartRenderOut",
+        "type": "object"
+      },
       "StatusIn": {
         "additionalProperties": false,
         "properties": {
@@ -3368,6 +3785,199 @@
           "type"
         ],
         "title": "ValidationError",
+        "type": "object"
+      },
+      "VoiceIn": {
+        "properties": {
+          "description": {
+            "default": "",
+            "maxLength": 2000,
+            "title": "Description",
+            "type": "string"
+          },
+          "language": {
+            "default": "en",
+            "maxLength": 20,
+            "minLength": 2,
+            "title": "Language",
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "provider": {
+            "maxLength": 40,
+            "minLength": 1,
+            "title": "Provider",
+            "type": "string"
+          },
+          "provider_voice_id": {
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Provider Voice Id",
+            "type": "string"
+          },
+          "sample_text": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sample Text"
+          }
+        },
+        "required": [
+          "provider",
+          "provider_voice_id",
+          "name"
+        ],
+        "title": "VoiceIn",
+        "type": "object"
+      },
+      "VoiceOut": {
+        "properties": {
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "is_active": {
+            "title": "Is Active",
+            "type": "boolean"
+          },
+          "language": {
+            "title": "Language",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "provider": {
+            "title": "Provider",
+            "type": "string"
+          },
+          "provider_voice_id": {
+            "title": "Provider Voice Id",
+            "type": "string"
+          },
+          "sample_text": {
+            "title": "Sample Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "provider",
+          "provider_voice_id",
+          "name",
+          "language",
+          "description",
+          "sample_text",
+          "is_active"
+        ],
+        "title": "VoiceOut",
+        "type": "object"
+      },
+      "VoicePreviewOut": {
+        "properties": {
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "null while the preview is being generated",
+            "title": "Url"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "title": "VoicePreviewOut",
+        "type": "object"
+      },
+      "VoiceUpdate": {
+        "properties": {
+          "description": {
+            "anyOf": [
+              {
+                "maxLength": 2000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "is_active": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Active"
+          },
+          "language": {
+            "anyOf": [
+              {
+                "maxLength": 20,
+                "minLength": 2,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Language"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "sample_text": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sample Text"
+          }
+        },
+        "title": "VoiceUpdate",
         "type": "object"
       },
       "WorldRuleCreate": {
@@ -4398,6 +5008,138 @@
         ]
       }
     },
+    "/api/v1/admin/voices": {
+      "get": {
+        "operationId": "admin_list_voices_api_v1_admin_voices_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/VoiceOut"
+                  },
+                  "title": "Response Admin List Voices Api V1 Admin Voices Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Admin List Voices",
+        "tags": [
+          "admin: voices"
+        ]
+      },
+      "post": {
+        "operationId": "admin_create_voice_api_v1_admin_voices_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VoiceIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VoiceOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Admin Create Voice",
+        "tags": [
+          "admin: voices"
+        ]
+      }
+    },
+    "/api/v1/admin/voices/{voice_id}": {
+      "put": {
+        "operationId": "admin_update_voice_api_v1_admin_voices__voice_id__put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "voice_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Voice Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VoiceUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VoiceOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Admin Update Voice",
+        "tags": [
+          "admin: voices"
+        ]
+      }
+    },
     "/api/v1/admin/writers": {
       "get": {
         "operationId": "list_writers_api_v1_admin_writers_get",
@@ -5055,6 +5797,160 @@
         ]
       }
     },
+    "/api/v1/studio/audio-lines/{line_id}": {
+      "put": {
+        "operationId": "edit_line_api_v1_studio_audio_lines__line_id__put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "line_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Line Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LineTextIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StartRenderOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Edit Line",
+        "tags": [
+          "studio: voices and audio"
+        ]
+      }
+    },
+    "/api/v1/studio/audio-lines/{line_id}/regenerate": {
+      "post": {
+        "operationId": "regenerate_line_api_v1_studio_audio_lines__line_id__regenerate_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "line_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Line Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StartRenderOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Regenerate Line",
+        "tags": [
+          "studio: voices and audio"
+        ]
+      }
+    },
+    "/api/v1/studio/audio-renders/{render_id}/retry": {
+      "post": {
+        "operationId": "retry_render_api_v1_studio_audio_renders__render_id__retry_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "render_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Render Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StartRenderOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Retry Render",
+        "tags": [
+          "studio: voices and audio"
+        ]
+      }
+    },
     "/api/v1/studio/canon-proposals/{proposal_id}/accept": {
       "post": {
         "operationId": "accept_proposal_api_v1_studio_canon_proposals__proposal_id__accept_post",
@@ -5429,6 +6325,100 @@
         "summary": "Update Episode",
         "tags": [
           "studio: episodes"
+        ]
+      }
+    },
+    "/api/v1/studio/episodes/{episode_id}/audio": {
+      "get": {
+        "operationId": "episode_audio_api_v1_studio_episodes__episode_id__audio_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "episode_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Episode Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EpisodeAudioOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Episode Audio",
+        "tags": [
+          "studio: voices and audio"
+        ]
+      },
+      "post": {
+        "operationId": "start_render_api_v1_studio_episodes__episode_id__audio_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "episode_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Episode Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StartRenderOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Start Render",
+        "tags": [
+          "studio: voices and audio"
         ]
       }
     },
@@ -8402,6 +9392,110 @@
         ]
       }
     },
+    "/api/v1/studio/series/{series_id}/voice-assignments": {
+      "get": {
+        "operationId": "get_cast_api_v1_studio_series__series_id__voice_assignments_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "series_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Series Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssignmentsOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Cast",
+        "tags": [
+          "studio: voices and audio"
+        ]
+      },
+      "put": {
+        "operationId": "set_cast_api_v1_studio_series__series_id__voice_assignments_put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "series_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Series Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssignmentsIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssignmentsOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Set Cast",
+        "tags": [
+          "studio: voices and audio"
+        ]
+      }
+    },
     "/api/v1/studio/series/{series_id}/world-rules": {
       "get": {
         "operationId": "list_world_rules_api_v1_studio_series__series_id__world_rules_get",
@@ -8709,6 +9803,94 @@
         "summary": "Update World Rules",
         "tags": [
           "studio: series and bible"
+        ]
+      }
+    },
+    "/api/v1/studio/voices": {
+      "get": {
+        "operationId": "list_voices_api_v1_studio_voices_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/VoiceOut"
+                  },
+                  "title": "Response List Voices Api V1 Studio Voices Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Voices",
+        "tags": [
+          "studio: voices and audio"
+        ]
+      }
+    },
+    "/api/v1/studio/voices/{voice_id}/preview": {
+      "get": {
+        "operationId": "voice_preview_api_v1_studio_voices__voice_id__preview_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "voice_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Voice Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VoicePreviewOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VoicePreviewOut"
+                }
+              }
+            },
+            "description": "Preview is being generated"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Voice Preview",
+        "tags": [
+          "studio: voices and audio"
         ]
       }
     },
